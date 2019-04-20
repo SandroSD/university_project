@@ -2,8 +2,23 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include <float.h>
     #include "y.tab.h"
+    #define COTA_INT 2147483647
+    #define COTA_FLOAT 3.402823E+38
+    #define OK 1
+    #define ERROR 0
+
+    struct struct_tablaSimbolos
+    {
+	    char nombre[100];
+	    char tipo[100];
+	    char valor[50];
+	    char longitud[100];
+    };
+    struct struct_tablaSimbolos tablaSimbolos[10000];
+    int crear_TS();
+    int push_TS(char*, char*);
+    int puntero_array = 0;
 %}
 
 %option noyywrap
@@ -12,86 +27,92 @@
 DIGITO			[0-9]
 LETRA			[a-zA-Z]
 ID			    {LETRA}({LETRA}|{DIGITO}|_)*
-REAL            -?{DIGITO}*["."]{DIGITO}+
-ENTERO          -?{DIGITO}+
-STRING         	\"([^"]|\\.)*\"
+CONST_INT		"-"?({DIGITO})+
+CONST_REAL		"-"?({DIGITO})+"."({DIGITO})*|({DIGITO})*"."({DIGITO})+
+CONST_STR      	\"([^"]|\\.)*\"
 COMENTARIO		\*\/.*\/\*
 
 %%
 DEFVAR      			{	return DEFVAR;	}
 ENDDEF      			{	return ENDDEF;	}
-int|INT        			{	return INT;		}
+int|INT        			{	return INTEGER; }
 float|FLOAT    			{	return FLOAT;	}
 string|STRING  			{	return STRING;	}
 if|IF          			{	return IF;		}
+then|THEN          		{	return THEN;	}
 else|ELSE     			{	return ELSE;	}
-while|WHILE    			{	return WHILE;	}
+endif|ENDIF     		{	return ENDIF;	}
+while|WHILE 			{	return WHILE;	}
 do|DO                   {	return DO;	}
 endwhile|ENDWHILE       {	return ENDWHILE;	}
-AND					    {	return AND;	}
-OR					    {	return OR;	}
-display|DISPLAY 		{	return WRITE;	}
-get|GET    			    {	return READ;	}
-":="        			{	return ASIG;	}
-","         			{	return COMA;	}
-":"         			{	return D_P;	}
-";"         			{	return PUNTO_Y_COMA;	}
-"("         			{	return P_A;	}
-")"         			{	return P_C;	}
-"["  					{	return C_A;	}
-"]"						{	return C_C;	}
-"{"         			{	return L_A;	}
-"}"         			{	return L_C;	}
+AND					    {	return OP_AND;	}
+OR					    {	return OP_OR;	}
+display|DISPLAY 		{	return DISPLAY;	}
+get|GET    			    {	return GET;	}
+":="        			{	return OP_ASIG;	}
 "+"         			{	return OP_SUM;	}
 "-"         			{	return OP_RES;	}
 "/"         			{	return OP_DIV;	}
 "*"         			{	return OP_MUL;	}
-">"         			{	return CMP_MAY;	}
-"<"         			{	return CMP_MEN;	}
-">="        			{	return CMP_MAYI;	}
-"<="        			{	return CMP_MENI;	}
-"!="        			{	return CMP_DIST;	}
+":"         			{	return OP_DOSP;	}
+","         			{	return CAR_COMA;}
+";"         			{	return CAR_PYC;	}
+"("         			{	return CAR_PA;	}
+")"         			{	return CAR_PC;	}
+"["  					{	return CAR_CA;	}
+"]"						{	return CAR_CC;	}
+"{"         			{	return CAR_LA;	}
+"}"         			{	return CAR_LC;	}
+">"         			{	return CMP_MAYOR;	}
+"<"         			{	return CMP_MENOR;	}
+">="        			{	return CMP_MAYORIGUAL;	}
+"<="        			{	return CMP_MENORIGUAL;	}
+"!="        			{	return CMP_DISTINTO;	}
 "=="        			{	return CMP_IGUAL;	}
-{ENTERO}    			{
-							strcpy(yylval.str, yytext);
-							int casteado = atoi(yytext);
-							if(casteado < -32768 || casteado > 32767) {
-								char msg[100];
-								sprintf(msg, "ERROR Lexico - Entero \'%d\' fuera de rango. Debe estar entre [-32768; 32767]", casteado);
+{CONST_INT}    			{   
+                            int num = atoi(yytext); 
+                            if(num >= COTA_INT*(-1) && num <= COTA_INT){
+                                push_TS("CONST_INT", yytext);
+                                return CONST_INT; 
+                            }else{
+                                sprintf(msg, "ERROR Lexico - Constante entera \'%d\' fuera de rango. Debe estar entre [-+ %d]", num, COTA_INT);
 								yyerror(msg);
-							}
-                            guardar_en_ts();
-							return ENTERO;
+                            }
 						}
-{REAL}      			{
-							strcpy(yylval.str, yytext);	
-							double casteado = atof(yytext);
-							if(casteado < -32768.000000 || casteado > FLT_MAX) {
-								char msg[100];
-								sprintf(msg, "ERROR Lexico - Float \'%f\' fuera de rango. Debe estar entre [-32768.000000; 3.40282e38]", casteado);
+{CONST_REAL}      		{
+                            double n;
+				            n = atof(yytext);
+				            if(n >= COTA_FLOAT*(-1) && n <= COTA_FLOAT){
+					            push_TS("CONST_REAL", yytext);
+					            return CONST_REAL; 
+				            } else {
+                                sprintf(msg, "ERROR Lexico - Constante real \'%f\' fuera de rango. Debe estar entre [-+ %f]", n, COTA_FLOAT);
 								yyerror(msg);
-							}
-                            guardar_en_ts();
-							return REAL;
+				            }
 						}
-{STRING}    			{	strcpy(yylval.str, yytext);
-							int longitud = strlen(yytext);
-							if(longitud > 32){
-								char msg[150];
-								sprintf(msg, "ERROR Lexico - Cadena \'%s\' demasiado larga. Maximo de 30 caracteres y contiene: %d", yytext, longitud-2);
+{CONST_STR}    			{	int cantCaracteres = strlen(yytext);
+					        if(cantCaracteres <= 32) { // Se cuentan las comillas tambien
+						        push_TS("CONST_STR", yytext);
+						        return CONST_STR;
+					        } else {
+						    sprintf(msg, "ERROR Lexico - Constante string \'%s\' demasiado larga. Maximo de 30 caracteres y contiene: %d", yytext, longitud-2);
+							yyerror(msg);
+					        }
+						}
+{ID}        			{	int cantCaracteres = strlen(yytext);
+					        if(cantCaracteres <= 20) {
+						        push_TS("ID", yytext); 
+						        return ID; 
+					        } else {
+                                sprintf(msg, "ERROR Lexico - ID: \'%s\' demasiado largo. Maximo de 20 caracteres y contiene: %d", yytext, cantCaracteres);
 								yyerror(msg);
-							}
-                            guardar_en_ts();
-							return STRING_CONST;	
-						}
-{ID}        			{	strcpy(yylval.str, yytext);
-                            guardar_en_ts();
-							return ID;	}
-{COMENTARIO} 			{	;	}
-"\n"					{	;	}
-"\r\n"					{	;	}
-"\t"					{	;	}
-" "						{	;	}
+					        }	
+                        }
+{COMENTARIO} 			{ }
+"\n"					{ }
+"\r\n"					{ }
+"\t"					{ }
+" "						{ }
 .						{	
 							char msg[300];
 							sprintf(msg, "ERROR Lexico - Caracter \'%s\' invalido", yytext);
@@ -99,3 +120,47 @@ get|GET    			    {	return READ;	}
 						}
 
 %%
+
+int crear_TS()
+{
+	FILE *archivo; 
+	int i;
+	archivo = fopen("ts.txt","w"); 
+
+	if (!archivo){	return ERROR; }
+
+	fprintf(archivo, "Nombre                        Tipo      Valor     Longitud\n");
+	
+	for (i = 0; i < puntero_array; i++)
+	{
+		if (strcmp(tablaSimbolos[i].tipo, "ID") == 0 )
+		{  
+			fprintf(archivo,"%-30s%-10s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+		}
+		else
+		{
+			fprintf(archivo,"_%-29s%-10s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+		}
+	}
+	fclose(archivo); 
+
+	return TODO_OK;
+}
+
+int push_TS(char* tipo, char* nombre)
+{
+	int i, posicion;
+	
+	for(i = 0; i < puntero_array; i++)
+	{
+		if(strcmp(tablaSimbolos[i].nombre, nombre) == 0)
+		{
+			return i;
+		}
+	}
+	strcpy(tablaSimbolos[puntero_array].tipo, tipo);
+	strcpy(tablaSimbolos[puntero_array].nombre, nombre);
+	posicion = puntero_array;
+	puntero_array++;
+	return posicion;
+}

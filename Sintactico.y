@@ -30,7 +30,7 @@
 %token INTEGER
 %token STRING
 %token IF THEN ELSE ENDIF
-%token WHILE DO ENDWHILE
+%token WHILE DO IN ENDWHILE
 %token OP_AND
 %token OP_OR
 %token CMP_MAYOR
@@ -65,7 +65,7 @@
 %%
 
 programa:   
-    {printf("\tInicia el COMPILADOR\n");} est_declaracion bloque {printf("\tFin COMPILADOR ok\n");}
+    {printf("\tInicia el COMPILADOR\n");} est_declaracion bloque {printf("\tFin COMPILADOR OK\n");}
     ;
 		
 est_declaracion:
@@ -95,13 +95,21 @@ bloque:
 
 sentencia:
   	 ciclo
+     |ciclo_especial
 	 |seleccion  
 	 |asignacion
+     |entrada_salida
 	 ;
 
 ciclo:
     WHILE { printf("\t\tWHILE\n");}CAR_PA condicion CAR_PC bloque ENDWHILE { printf("\t\tFIN DEL WHILE\n");}
      ;
+
+ciclo_especial:
+    WHILE { printf("\t\tWHILE (especial) \n");} ID IN CAR_CA lista_expresiones CAR_CC DO bloque ENDWHILE { printf("\t\tFIN DEL WHILE\n");}
+     ;
+
+lista_expresiones: expresion | lista_expresiones CAR_COMA expresion
 
 asignacion:
 			lista_id OP_ASIG expresion {printf("\t\tFIN LINEA ASIGNACION\n");}
@@ -127,8 +135,6 @@ condicion:
          comparacion
          |comparacion OP_AND comparacion{printf("\t\tCONDICION DOBLE AND\n");}
 		 |comparacion OP_OR  comparacion{printf("\t\tCONDICION DOBLE OR\n");}
-		 |OP_NOT CAR_PA comparacion OP_AND comparacion CAR_PC{printf("\t\tNOT CONDICION DOBLE AND\n");}
-		 |OP_NOT CAR_PA comparacion OP_OR  comparacion CAR_PC{printf("\t\tNOT CONDICION DOBLE OR\n");}
 	 ;
 
 comparacion:
@@ -181,5 +187,5 @@ int yyerror(char *msg)
 {
     fflush(stderr);
     fprintf(stderr, "\n\n--- ERROR ---\nAt line %d: \'%s\'.\n\n", yylineno, msg);
-    exit(5);
+    exit(1);
 }

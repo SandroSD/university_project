@@ -8,6 +8,8 @@
     #define OK 1
     #define ERROR 0
 
+    int yyerror(char *msg);
+
     struct struct_tablaSimbolos
     {
 	    char nombre[100];
@@ -35,18 +37,21 @@ COMENTARIO		\*\/.*\/\*
 %%
 DEFVAR      			{	return DEFVAR;	}
 ENDDEF      			{	return ENDDEF;	}
-int|INT        			{	return INTEGER; }
-float|FLOAT    			{	return FLOAT;	}
+int|INT|INTEGER			{	return INTEGER; }
+float|FLOAT    			{	return REAL;	}
 string|STRING  			{	return STRING;	}
 if|IF          			{	return IF;		}
 then|THEN          		{	return THEN;	}
 else|ELSE     			{	return ELSE;	}
 endif|ENDIF     		{	return ENDIF;	}
 while|WHILE 			{	return WHILE;	}
+in|IN 			        {	return IN;	}
 do|DO                   {	return DO;	}
 endwhile|ENDWHILE       {	return ENDWHILE;	}
-AND					    {	return OP_AND;	}
-OR					    {	return OP_OR;	}
+and|AND					    {	return OP_AND;	}
+"&&"					{	return OP_AND;	}
+or|OR					    {	return OP_OR;	}
+"||"					{	return OP_OR;	}
 display|DISPLAY 		{	return DISPLAY;	}
 get|GET    			    {	return GET;	}
 ":="        			{	return OP_ASIG;	}
@@ -74,7 +79,8 @@ get|GET    			    {	return GET;	}
                             if(num >= COTA_INT*(-1) && num <= COTA_INT){
                                 push_TS("CONST_INT", yytext);
                                 return CONST_INT; 
-                            }else{
+                            } else {
+                                char msg[300];
                                 sprintf(msg, "ERROR Lexico - Constante entera \'%d\' fuera de rango. Debe estar entre [-+ %d]", num, COTA_INT);
 								yyerror(msg);
                             }
@@ -86,6 +92,7 @@ get|GET    			    {	return GET;	}
 					            push_TS("CONST_REAL", yytext);
 					            return CONST_REAL; 
 				            } else {
+                                char msg[300];
                                 sprintf(msg, "ERROR Lexico - Constante real \'%f\' fuera de rango. Debe estar entre [-+ %f]", n, COTA_FLOAT);
 								yyerror(msg);
 				            }
@@ -95,8 +102,9 @@ get|GET    			    {	return GET;	}
 						        push_TS("CONST_STR", yytext);
 						        return CONST_STR;
 					        } else {
-						    sprintf(msg, "ERROR Lexico - Constante string \'%s\' demasiado larga. Maximo de 30 caracteres y contiene: %d", yytext, longitud-2);
-							yyerror(msg);
+                                char msg[300];
+                                sprintf(msg, "ERROR Lexico - Constante string \'%s\' demasiado larga. Maximo de 30 caracteres y contiene: %d", yytext, cantCaracteres-2);
+                                yyerror(msg);
 					        }
 						}
 {ID}        			{	int cantCaracteres = strlen(yytext);
@@ -104,6 +112,7 @@ get|GET    			    {	return GET;	}
 						        push_TS("ID", yytext); 
 						        return ID; 
 					        } else {
+                                char msg[300];
                                 sprintf(msg, "ERROR Lexico - ID: \'%s\' demasiado largo. Maximo de 20 caracteres y contiene: %d", yytext, cantCaracteres);
 								yyerror(msg);
 					        }	
@@ -144,7 +153,7 @@ int crear_TS()
 	}
 	fclose(archivo); 
 
-	return TODO_OK;
+	return OK;
 }
 
 int push_TS(char* tipo, char* nombre)

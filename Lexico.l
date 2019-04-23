@@ -1,24 +1,9 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-    #include <string.h>
-    #include "y.tab.h"
+    #include "y.tab.h" // Archivo (Header file) generado por bison
     #define COTA_INT 2147483647
     #define COTA_FLOAT 3.402823E+38
-    #define OK 1
-    #define ERROR 0
-
-    struct struct_tablaSimbolos
-    {
-	    char nombre[100];
-	    char tipo[100];
-	    char valor[50];
-	    char longitud[100];
-    };
-    struct struct_tablaSimbolos tablaSimbolos[10000];
-    int crear_TS();
-    int push_TS(char*, char*);
-    int puntero_array = 0;
 %}
 
 %option noyywrap
@@ -127,47 +112,3 @@ get|GET    			    {	return GET;	}
 						}
 
 %%
-
-int crear_TS()
-{
-	FILE *archivo; 
-	int i;
-	archivo = fopen("ts.txt","w"); 
-
-	if (!archivo){	return ERROR; }
-
-	fprintf(archivo, "Nombre                        Tipo      Valor     Longitud\n");
-	
-	for (i = 0; i < puntero_array; i++)
-	{
-		if (strcmp(tablaSimbolos[i].tipo, "ID") == 0 )
-		{  
-			fprintf(archivo,"%-30s%-10s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
-		}
-		else
-		{
-			fprintf(archivo,"_%-29s%-10s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
-		}
-	}
-	fclose(archivo); 
-
-	return OK;
-}
-
-int push_TS(char* tipo, char* nombre)
-{
-	int i, posicion;
-	
-	for(i = 0; i < puntero_array; i++)
-	{
-		if(strcmp(tablaSimbolos[i].nombre, nombre) == 0)
-		{
-			return i;
-		}
-	}
-	strcpy(tablaSimbolos[puntero_array].tipo, tipo);
-	strcpy(tablaSimbolos[puntero_array].nombre, nombre);
-	posicion = puntero_array;
-	puntero_array++;
-	return posicion;
-}

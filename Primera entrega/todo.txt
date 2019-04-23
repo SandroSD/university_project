@@ -1,0 +1,4 @@
+Falta hacer:
+- Guardar el atributo valor cuando se reconoce una constante en el lexico.
+- Mejorar el print de las acciones semanticas en cada regla y formatear codigo para que quede mas entendible.
+- Completar archivo lote de pruebas (prueba.txt).

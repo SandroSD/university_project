@@ -1,0 +1,25 @@
+Nombre                        Tipo      Valor     Longitud
+n                             ID        
+a                             ID        
+b                             ID        
+i                             ID        
+cadena                        ID        
+s                             ID        
+_1                            CONST_INT 
+_15                           CONST_INT 
+_99.99                        CONST_REAL
+_.99                          CONST_REAL
+_99.                          CONST_REAL
+_-542.43                      CONST_REAL
+_""                           CONST_STR 
+_7                            CONST_INT 
+_5                            CONST_INT 
+c                             ID        
+_2                            CONST_INT 
+_4                            CONST_INT 
+_16                           CONST_INT 
+_8                            CONST_INT 
+_"ewr"                        CONST_STR 
+i1                            ID        
+_"@%asdr"                     CONST_STR 
+_"@% > = FA <asdr"            CONST_STR 

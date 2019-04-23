@@ -1,5 +1,9 @@
 # Readme file
 
+## Compilador
+
+Compilador en C para la materia Lenguajes y Compiladores
+
 ## Cómo ejecutar el compilador
 
 Para ejecutar el compilador en Windows 10 hacer doble click en el archivo **generarExe.bat**

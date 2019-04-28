@@ -4,6 +4,11 @@
     #include "y.tab.h" // Archivo (Header file) generado por bison
     #define COTA_INT 2147483647
     #define COTA_FLOAT 3.402823E+38
+
+    // Funciones que no es necesario incluirlas (Ya que se importa desde y.tab.h). 
+    // Se declaran unicamente para evitar warning [-Wimplicit-function-declaration] al complilar.
+    int yyerror(char *msg);
+    int push_TS(char*, char*);
 %}
 
 %option noyywrap

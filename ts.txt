@@ -1,25 +1,25 @@
-Nombre                        Tipo      Valor     Longitud
-n                             ID        
-a                             ID        
-b                             ID        
-i                             ID        
-cadena                        ID        
-s                             ID        
-_1                            CONST_INT 
-_15                           CONST_INT 
-_99.99                        CONST_REAL
-_.99                          CONST_REAL
-_99.                          CONST_REAL
-_-542.43                      CONST_REAL
-_""                           CONST_STR 
-_7                            CONST_INT 
-_5                            CONST_INT 
-c                             ID        
-_2                            CONST_INT 
-_4                            CONST_INT 
-_16                           CONST_INT 
-_8                            CONST_INT 
-_"ewr"                        CONST_STR 
-i1                            ID        
-_"@%asdr"                     CONST_STR 
-_"@% > = FA <asdr"            CONST_STR 
+Nombre                        Tipo        Valor                         Longitud    
+n                             ID          
+a                             ID          
+b                             ID          
+i                             ID          
+cadena                        ID          
+s                             ID          
+_1                            CONST_INT   1                             1           
+_15                           CONST_INT   15                            2           
+_99.99                        CONST_REAL  99.99                         5           
+_.99                          CONST_REAL  .99                           3           
+_99.                          CONST_REAL  99.                           3           
+_-542.43                      CONST_REAL  -542.43                       7           
+_""                           CONST_STR   ""                            2           
+_7                            CONST_INT   7                             1           
+_5                            CONST_INT   5                             1           
+c                             ID          
+_2                            CONST_INT   2                             1           
+_4                            CONST_INT   4                             1           
+_16                           CONST_INT   16                            2           
+_8                            CONST_INT   8                             1           
+_"ewr"                        CONST_STR   "ewr"                         5           
+i1                            ID          
+_"@%asdr"                     CONST_STR   "@%asdr"                      8           
+_"@% > = FA <asdr"            CONST_STR   "@% > = FA <asdr"             17          

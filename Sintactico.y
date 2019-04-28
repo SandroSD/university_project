@@ -78,106 +78,102 @@
 %%
 
 programa:   
-    {printf("\tInicia el COMPILADOR\n");} est_declaracion bloque {printf("\tFin COMPILADOR OK\n");}
-    ;
+			{	printf("\tInicia el COMPILADOR\n\n");	} 
+			est_declaracion bloque 
+			{	printf("\n\tFin COMPILADOR OK\n");	}	;
 		
 est_declaracion:
-	DEFVAR {printf("\t\tDECLARACIONES DEF\n");} declaraciones ENDDEF {printf("\tFin de las Declaraciones DEF\n");}
-        ;
+			DEFVAR {	printf("\t\tDECLARACIONES DEFVAR\n");	} 
+			declaraciones 
+			ENDDEF {	printf("\t\tFIN DECLARACIONES ENDDEFF\n");	}	;
 
 declaraciones:         	        	
              declaracion
-             | declaraciones declaracion
-    	     ;
+             | declaraciones declaracion	;
 
 declaracion:  
            lista_var OP_DOSP REAL
 			| lista_var OP_DOSP STRING
-			| lista_var OP_DOSP INTEGER
-           ;
+			| lista_var OP_DOSP INTEGER	;
 
 lista_var:  
-	 ID
-	 | lista_var CAR_COMA ID   
- 	 ;
+	 		ID
+	 		| lista_var CAR_COMA ID	;
 
 bloque:  
-      sentencia
-      |bloque sentencia
-      ;
+      		sentencia
+      		| bloque sentencia	;
 
 sentencia:
-  	 ciclo
-     |ciclo_especial
-	 |seleccion  
-	 |asignacion
-     |entrada_salida
-	 ;
+			ciclo
+			| ciclo_especial
+			| seleccion  
+			| asignacion
+			| entrada_salida	;
 
 ciclo:
-    WHILE { printf("\t\tWHILE\n");}CAR_PA condicion CAR_PC bloque ENDWHILE { printf("\t\tFIN DEL WHILE\n");}
-     ;
+    		WHILE {	printf("\t\tWHILE\n");	}
+			CAR_PA condicion CAR_PC bloque 
+			ENDWHILE {	printf("\t\tFIN DEL WHILE\n");	}	;
 
 ciclo_especial:
-    WHILE { printf("\t\tWHILE (especial) \n");} ID IN CAR_CA lista_expresiones CAR_CC DO bloque ENDWHILE { printf("\t\tFIN DEL WHILE\n");}
-     ;
+    		WHILE	{ printf("\t\tWHILE (especial) \n");	} 
+			ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
+			ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
 
-lista_expresiones: expresion | lista_expresiones CAR_COMA expresion
+lista_expresiones: 
+			expresion 
+			| lista_expresiones CAR_COMA expresion ;
 
 asignacion:
-			lista_id OP_ASIG expresion {printf("\t\tFIN LINEA ASIGNACION\n");}
-	  ;
+			lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}	;
 
 lista_id:
 			lista_id OP_ASIG ID 
-			| ID 
-		;
+			| ID ;
 	  
 entrada_salida: 
-	GET{printf("\t\tGET\n"); } ID 
-	|DISPLAY{printf("\t\tDISPLAY\n");} ID 
-	|DISPLAY{printf("\t\tDISPLAY\n");} CONST_STR
-;
+			GET			{	printf("\t\tGET\n"); 	} ID 
+			| DISPLAY	{	printf("\t\tDISPLAY\n");} ID 
+			| DISPLAY	{	printf("\t\tDISPLAY\n");} CONST_STR	;
 
 seleccion: 
-    	 IF CAR_PA condicion CAR_PC THEN bloque ENDIF{printf("\t\tENDIF\n");}
-		| IF CAR_PA condicion CAR_PC THEN bloque ELSE bloque ENDIF {printf("\t\t IF CON ELSE\n");}	 
-;
+    	 	IF CAR_PA condicion CAR_PC THEN 
+			bloque 
+			ENDIF	{	printf("\t\tENDIF\n");	}
+			| IF CAR_PA condicion CAR_PC THEN 
+			bloque 
+			ELSE 
+			bloque 
+			ENDIF 	{	printf("\t\t IF CON ELSE\n");	}	;
 
 condicion:
-         comparacion
-         |comparacion OP_AND comparacion{printf("\t\tCONDICION DOBLE AND\n");}
-		 |comparacion OP_OR  comparacion{printf("\t\tCONDICION DOBLE OR\n");}
-	 ;
+			comparacion
+			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
+			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");	}	;
 
 comparacion:
-	   expresion comparador expresion
-	   ;
+	   		expresion comparador expresion	;
 
 comparador:
-	   CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO
-	   ;
+	   		CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;
 
 expresion:
-         termino
-		|expresion OP_SUM termino
-		|expresion OP_RES termino
- 	 ;
-	 
-	 
+			termino
+			|expresion OP_SUM termino
+			|expresion OP_RES termino	;
+
 termino: 
-       factor
-       |termino OP_MUL factor
-	   |termino OP_DIV factor
-       ;
+			factor
+			|termino OP_MUL factor
+			|termino OP_DIV factor	;
 
 factor: 
-      ID
-      | CONST_INT
-      | CONST_REAL
-      | CONST_STR 
-	  | CAR_PA expresion CAR_PC 	  
-      ;
+			ID
+			| CONST_INT
+			| CONST_REAL
+			| CONST_STR 
+			| CAR_PA expresion CAR_PC ;
 
 %%
 
@@ -212,17 +208,21 @@ int crear_TS()
 
 	if (!archivo){	return ERROR; }
 
-	fprintf(archivo, "Nombre                        Tipo      Valor     Longitud\n");
+	// fprintf(archivo, "Nombre\t\t\tTipo\t\t\tValor\t\t\tLongitud\n");
+	// Cabecera del archivo
+	fprintf(archivo, "%-30s%-12s%-30s%-12s\n","Nombre","Tipo","Valor","Longitud");
 	
 	for (i = 0; i < posicion_en_ts; i++)
 	{
 		if (strcmp(tablaSimbolos[i].tipo, "ID") == 0 )
 		{  
-			fprintf(archivo,"%-30s%-10s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+			fprintf(archivo,"%-30s%-12s\n", tablaSimbolos[i].nombre, "ID");
 		}
 		else
 		{
-			fprintf(archivo,"_%-29s%-10s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+			int longitud = strlen(tablaSimbolos[i].nombre);
+			fprintf(archivo,"_%-29s%-12s%-30s%-12d\n", 
+			tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].nombre, longitud);
 		}
 	}
 	fclose(archivo); 

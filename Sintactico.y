@@ -216,7 +216,7 @@ int crear_TS()
 	{
 		if (strcmp(tablaSimbolos[i].tipo, "ID") == 0 )
 		{  
-			fprintf(archivo,"%-30s%-12s\n", tablaSimbolos[i].nombre, "ID");
+			fprintf(archivo,"%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
 		}
 		else
 		{

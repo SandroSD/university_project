@@ -6,7 +6,9 @@ DEFVAR
  cadena, s : STRING
 ENDDEF
 
- 
+
+a:=b
+
 i:=1	
 a:=15
 n:= 99.99

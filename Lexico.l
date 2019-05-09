@@ -14,13 +14,14 @@
 %option noyywrap
 %option yylineno
 
-DIGITO			[0-9]
-LETRA			[a-zA-Z]
-ID			    {LETRA}({LETRA}|{DIGITO}|_)*
-CONST_INT		"-"?({DIGITO})+
-CONST_REAL		"-"?({DIGITO})+"."({DIGITO})*|({DIGITO})*"."({DIGITO})+
-CONST_STR      	\"([^"]|\\.)*\"
-COMENTARIO		\*\/.*\/\*
+DIGITO			        [0-9]
+LETRA			        [a-zA-Z]
+ID			            {LETRA}({LETRA}|{DIGITO}|_)*
+CONST_INT		        "-"?({DIGITO})+
+CONST_REAL		        "-"?({DIGITO})+"."({DIGITO})*|({DIGITO})*"."({DIGITO})+
+CONST_STR      	        \"([^"]|\\.)*\"
+COMENTARIO              "*/"([^*/]|\n)*?"/*"
+COMENTARIO_ANIDADO      "*/"([^*/]|\n|{COMENTARIO})*?"/*"
 
 %%
 DEFVAR      			{	return DEFVAR;	}
@@ -106,6 +107,7 @@ get|GET    			    {	return GET;	}
 					        }	
                         }
 {COMENTARIO} 			{ }
+{COMENTARIO_ANIDADO}	{ }
 "\n"					{ }
 "\r\n"					{ }
 "\t"					{ }

@@ -6,6 +6,11 @@ DEFVAR
  cadena, s : STRING
 ENDDEF
 
+*/ Comentario
+de mas de una
+linea /*
+
+*/ Comentario */ Anidado /* /*
 
 a:=b
 

@@ -1,7 +1,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-	#include <string.h>
+    #include <string.h>
     #include "y.tab.h"
     #define OK 1
     #define ERROR 0
@@ -80,49 +80,50 @@
 %%
 
 programa:   
-			{	printf("\tInicia el COMPILADOR\n\n");	} 
-			est_declaracion bloque 
-			{	printf("\n\tFin COMPILADOR OK\n");	}	;
+	{	printf("\tInicia el COMPILADOR\n\n");	} 
+	est_declaracion bloque 
+	{	printf("\n\tFin COMPILADOR OK\n");	}	;
 		
 est_declaracion:
-			DEFVAR {	printf("\t\tDECLARACIONES DEFVAR\n");	} 
-			declaraciones 
-			ENDDEF {	printf("\t\tFIN DECLARACIONES ENDDEFF\n");	}	;
+	DEFVAR {	printf("\t\tDECLARACIONES DEFVAR\n");	} 
+	declaraciones 
+	ENDDEF {	printf("\t\tFIN DECLARACIONES ENDDEFF\n");	}	;
 
-declaraciones:         	        	
-             declaracion
-             | declaraciones declaracion	;
+declaraciones:
+	declaracion
+	| declaraciones declaracion	;
 
-declaracion:  
-           lista_var OP_DOSP REAL
-			| lista_var OP_DOSP STRING
-			| lista_var OP_DOSP INTEGER	;
+declaracion:
+	lista_var OP_DOSP REAL
+	| lista_var OP_DOSP STRING
+	| lista_var OP_DOSP INTEGER	;
 
-lista_var:  
-	 		ID
-	 		| lista_var CAR_COMA ID	;
+lista_var:
+	ID
+	| lista_var CAR_COMA ID	;
 
-bloque:  
-      		sentencia
-      		| bloque sentencia	;
+bloque:
+	sentencia
+	| bloque sentencia	;
 
 sentencia:
-			ciclo
-			| ciclo_especial
-			| seleccion  
-			| asignacion
-			| entrada_salida	;
+	ciclo
+	| ciclo_especial
+	| seleccion
+	| asignacion
+	| entrada_salida	;
 
 ciclo:
-    		WHILE {	printf("\t\tWHILE\n");	}
-			CAR_PA condicion CAR_PC bloque 
-			ENDWHILE {	printf("\t\tFIN DEL WHILE\n");	}	;
+	WHILE		{	printf("\t\tWHILE\n");	}
+	CAR_PA condicion CAR_PC bloque 
+	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n");	}	;
 
 ciclo_especial:
-    		WHILE	{ printf("\t\tWHILE (especial) \n");	} 
-			ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
-			ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
+	WHILE		{ printf("\t\tWHILE (especial) \n");	} 
+	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
+	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
 
+<<<<<<< HEAD
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;
 lista_variables_constantes:
@@ -138,27 +139,36 @@ lista_expresiones:
 asignacion:
 			lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}
 			| lista_id OP_ASIG longitud 	{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");	}	;
+=======
+lista_expresiones:
+	expresion
+	| lista_expresiones CAR_COMA expresion ;
+
+asignacion:
+	lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}	;
+>>>>>>> b36bf9bdb44ad9a105b82afad2b04145e9f704ef
 
 lista_id:
-			lista_id OP_ASIG ID 
-			| ID ;
+	lista_id OP_ASIG ID
+	| ID ;
 	  
-entrada_salida: 
-			GET			{	printf("\t\tGET\n"); 	} ID 
-			| DISPLAY	{	printf("\t\tDISPLAY\n");} ID 
-			| DISPLAY	{	printf("\t\tDISPLAY\n");} CONST_STR	;
+entrada_salida:
+	GET		{	printf("\t\tGET\n"); 	} ID
+	| DISPLAY	{	printf("\t\tDISPLAY\n");} ID
+	| DISPLAY	{	printf("\t\tDISPLAY\n");} CONST_STR	;
 
-seleccion: 
-    	 	IF CAR_PA condicion CAR_PC THEN 
-			bloque 
-			ENDIF	{	printf("\t\tENDIF\n");	}
-			| IF CAR_PA condicion CAR_PC THEN 
-			bloque 
-			ELSE 
-			bloque 
-			ENDIF 	{	printf("\t\t IF CON ELSE\n");	}	;
+seleccion:
+	IF CAR_PA condicion CAR_PC THEN 
+	bloque 
+	ENDIF	{	printf("\t\tENDIF\n");	}
+	| IF CAR_PA condicion CAR_PC THEN 
+	bloque 
+	ELSE 
+	bloque
+	ENDIF 	{	printf("\t\t IF CON ELSE\n");	}	;
 
 condicion:
+<<<<<<< HEAD
 			comparacion
 			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}
 			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
@@ -167,26 +177,34 @@ condicion:
 comparacion:
 	   		expresion comparador expresion	
 			| longitud comparador expresion;
+=======
+	comparacion
+	| comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
+	| comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");	}	;
+
+comparacion:
+	expresion comparador expresion	;
+>>>>>>> b36bf9bdb44ad9a105b82afad2b04145e9f704ef
 
 comparador:
-	   		CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;
+	CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;
 
 expresion:
-			termino
-			|expresion OP_SUM termino
-			|expresion OP_RES termino	;
+	termino
+	| expresion OP_SUM termino
+	| expresion OP_RES termino	;
 
-termino: 
-			factor
-			|termino OP_MUL factor
-			|termino OP_DIV factor	;
+termino:
+	factor
+	| termino OP_MUL factor
+	| termino OP_DIV factor	;
 
-factor: 
-			ID
-			| CONST_INT
-			| CONST_REAL
-			| CONST_STR 
-			| CAR_PA expresion CAR_PC ;
+factor:
+	ID
+	| CONST_INT
+	| CONST_REAL
+	| CONST_STR
+	| CAR_PA expresion CAR_PC ;
 
 %%
 

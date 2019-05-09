@@ -44,6 +44,7 @@
 %token STRING
 %token IF THEN ELSE ENDIF
 %token WHILE DO IN ENDWHILE
+%token LONG
 %token OP_AND
 %token OP_OR
 %token OP_NOT
@@ -122,12 +123,21 @@ ciclo_especial:
 			ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
 			ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
 
+longitud: 
+			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;
+lista_variables_constantes:
+			lista_variables_constantes CAR_COMA ID
+			| lista_variables_constantes CAR_COMA CONST_INT
+			| ID
+			| CONST_INT;
+
 lista_expresiones: 
 			expresion 
 			| lista_expresiones CAR_COMA expresion ;
 
 asignacion:
-			lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}	;
+			lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}
+			| lista_id OP_ASIG longitud 	{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");	}	;
 
 lista_id:
 			lista_id OP_ASIG ID 
@@ -155,7 +165,8 @@ condicion:
 			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");		}	;
 
 comparacion:
-	   		expresion comparador expresion	;
+	   		expresion comparador expresion	
+			| longitud comparador expresion;
 
 comparador:
 	   		CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;

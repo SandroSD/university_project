@@ -44,6 +44,7 @@ or|OR					{	return OP_OR;	}
 not|NOT                 {	return OP_NOT;	}
 display|DISPLAY 		{	return DISPLAY;	}
 get|GET    			    {	return GET;	    }
+long|LONG  			    {	return LONG;    }
 ":="        			{	return OP_ASIG;	}
 "+"         			{	return OP_SUM;	}
 "-"         			{	return OP_RES;	}

@@ -46,6 +46,7 @@
 %token WHILE DO IN ENDWHILE
 %token OP_AND
 %token OP_OR
+%token OP_NOT
 %token CMP_MAYOR
 %token CMP_MENOR
 %token CMP_MAYORIGUAL
@@ -149,8 +150,9 @@ seleccion:
 
 condicion:
 			comparacion
+			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}
 			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
-			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");	}	;
+			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");		}	;
 
 comparacion:
 	   		expresion comparador expresion	;

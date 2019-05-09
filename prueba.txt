@@ -32,33 +32,43 @@ DO
 endwhile
 
 
-*/ CONDICION 1 /*
+*/ CONDICION 1 (&&) /*
 if (i==15 && a==4) THEN
 	i:=16
 ENDIF
 
-*/ CONDICION 2 /*
+*/ CONDICION 2 (AND) /*
 if (i==15 AND a==4) THEN
 	i:=16
 ENDIF
 
-*/ CONDICION 3 /*
+*/ CONDICION 3 (and) /*
 if (i==15 and a==4) THEN
 	i:=16
 ENDIF
 
-*/ CONDICION 4 /*
+*/ CONDICION 4 (||) /*
 if (i==15 || a==4) THEN
 	i:=16
 ENDIF
 
-*/ CONDICION 5 /*
+*/ CONDICION 5 (OR) /*
 if (i==15 OR a==4) THEN
 	i:=16
 ENDIF
 
-*/ CONDICION 6 /*
+*/ CONDICION 6 (or) /*
 if (i==15 or a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 7 (not) /*
+if (not a!=4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 8 (NOT) /*
+if (NOT a==4) THEN
 	i:=16
 ENDIF
 

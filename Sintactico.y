@@ -30,7 +30,10 @@
 // Ejemplo: strcpy(yylval.str, yytext);
 // Mas info: http://www.gnu.org/software/bison/manual/html_node/Union-Decl.html#Union-Decl
 %union {
-  char str[500];
+	char * int_val;
+	char * real_val;
+	char * str_val;
+	char * cmp_val;
 }
 
 // Start symbol
@@ -94,9 +97,9 @@ declaraciones:
 	| declaraciones declaracion	;
 
 declaracion:
-	lista_var OP_DOSP REAL
-	| lista_var OP_DOSP STRING
-	| lista_var OP_DOSP INTEGER	;
+	lista_var OP_DOSP REAL				{}
+	| lista_var OP_DOSP STRING			{}
+	| lista_var OP_DOSP INTEGER			{};
 
 lista_var:
 	ID
@@ -123,7 +126,6 @@ ciclo_especial:
 	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
 	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
 
-<<<<<<< HEAD
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;
 lista_variables_constantes:
@@ -139,14 +141,6 @@ lista_expresiones:
 asignacion:
 			lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}
 			| lista_id OP_ASIG longitud 	{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");	}	;
-=======
-lista_expresiones:
-	expresion
-	| lista_expresiones CAR_COMA expresion ;
-
-asignacion:
-	lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}	;
->>>>>>> b36bf9bdb44ad9a105b82afad2b04145e9f704ef
 
 lista_id:
 	lista_id OP_ASIG ID
@@ -168,7 +162,6 @@ seleccion:
 	ENDIF 	{	printf("\t\t IF CON ELSE\n");	}	;
 
 condicion:
-<<<<<<< HEAD
 			comparacion
 			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}
 			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
@@ -177,14 +170,6 @@ condicion:
 comparacion:
 	   		expresion comparador expresion	
 			| longitud comparador expresion;
-=======
-	comparacion
-	| comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
-	| comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");	}	;
-
-comparacion:
-	expresion comparador expresion	;
->>>>>>> b36bf9bdb44ad9a105b82afad2b04145e9f704ef
 
 comparador:
 	CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;
@@ -245,7 +230,8 @@ int crear_TS()
 	
 	for (i = 0; i < posicion_en_ts; i++)
 	{
-		if (strcmp(tablaSimbolos[i].tipo, "ID") == 0 )
+		if (strcmp(tablaSimbolos[i].tipo, "INTEGER") == 0 || strcmp(tablaSimbolos[i].tipo, "REAL")
+		|| strcmp(tablaSimbolos[i].tipo, "STRING"))
 		{  
 			fprintf(archivo,"%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
 		}

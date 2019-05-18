@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "constantes.h"
 
 #define TERC_ASIG -1
 #define TERC_SUMA -2
@@ -58,7 +59,6 @@ typedef struct
     int opIzq;
     int opDer;
 } terceto_t;
-
 typedef struct s_node
 {
     terceto_t info;
@@ -67,19 +67,28 @@ typedef struct s_node
 
 typedef t_node *lista_tercetos_t;
 
-void CrearLT(lista_tercetos_t *);
+struct struct_Terceto
+{
+    char operador[100];
+    char operandoIzq[100];
+    char operandoDer[100];
+};
+struct struct_Terceto tercetos[10000];
 
-int InsertarEnLT(lista_tercetos_t *, terceto_t *);
-int CrearTerceto(int, int, int, lista_tercetos_t *);
-void VaciarLT(lista_tercetos_t *);
-void ObtenerItemLT(lista_tercetos_t *, int, terceto_t *);
-int BuscarPosLT(lista_tercetos_t *, terceto_t *);
+int crearTerceto(char*, char*, char*);
+// int CrearTerceto(int, int, int, lista_tercetos_t *);
+// int InsertarEnLT(lista_tercetos_t *, terceto_t *);
+// void VaciarLT(lista_tercetos_t *);
+// void ObtenerItemLT(lista_tercetos_t *, int, terceto_t *);
+// int BuscarPosLT(lista_tercetos_t *, terceto_t *);
 void ModificarTerceto(int, int, int, lista_tercetos_t *, int);
-void NegarOperadorTerceto(int, lista_tercetos_t *);
+// void NegarOperadorTerceto(int, lista_tercetos_t *);
 int NegarOperador(int);
 void DumpLista(lista_tercetos_t *);
 int NumeroUltimoTerceto();
-void EliminarUltimoTerceto(lista_tercetos_t *);
-int informeError(char *error);
+// void EliminarUltimoTerceto(lista_tercetos_t *);
+// int informeError(char *error);
+
+int crearArchivoTercetosIntermedia();
 
 #endif

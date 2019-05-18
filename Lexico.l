@@ -64,10 +64,11 @@ long|LONG  			    {	return LONG;    }
 "<="        			{	return CMP_MENORIGUAL;	}
 "!="        			{	return CMP_DISTINTO;	}
 "=="        			{	return CMP_IGUAL;	}
-{CONST_INT}    			{   
-                            int num = atoi(yytext); 
+{CONST_INT}    			{
+							yylval.str_val = strdup(yytext);
+                            int num = atoi(yylval.str_val); 
                             if(num >= COTA_INT*(-1) && num <= COTA_INT){
-                                insertarTokenEnTS("CONST_INT", yytext);
+                                insertarTokenEnTS("CONST_INT", yylval.str_val);
                                 return CONST_INT; 
                             } else {
                                 char msg[300];
@@ -76,10 +77,10 @@ long|LONG  			    {	return LONG;    }
                             }
 						}
 {CONST_REAL}      		{
-                            double n;
-				            n = atof(yytext);
+							yylval.str_val = strdup(yytext);
+                            double n = atof(yylval.str_val);
 				            if(n >= COTA_FLOAT*(-1) && n <= COTA_FLOAT){
-					            insertarTokenEnTS("CONST_REAL", yytext);
+					            insertarTokenEnTS("CONST_REAL", yylval.str_val);
 					            return CONST_REAL; 
 				            } else {
                                 char msg[300];
@@ -87,9 +88,11 @@ long|LONG  			    {	return LONG;    }
 								yyerror(msg);
 				            }
 						}
-{CONST_STR}    			{	int cantCaracteres = strlen(yytext);
+{CONST_STR}    			{	
+							yylval.str_val = strdup(yytext);
+							int cantCaracteres = strlen(yylval.str_val);
 					        if(cantCaracteres <= COTA_STR) { // Se cuentan las comillas tambien
-						        insertarTokenEnTS("CONST_STR", yytext);
+						        insertarTokenEnTS("CONST_STR", yylval.str_val);
 						        return CONST_STR;
 					        } else {
                                 char msg[300];

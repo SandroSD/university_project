@@ -1,2 +1,0 @@
-Falta hacer:
-- Completar archivo lote de pruebas (prueba.txt).

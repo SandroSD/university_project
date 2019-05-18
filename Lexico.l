@@ -1,14 +1,13 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-    #include "y.tab.h" // Archivo (Header file) generado por bison
-    #define COTA_INT 2147483647
-    #define COTA_FLOAT 3.402823E+38
+    #include "y.tab.h"
+    #include "constantes.h"
+    #include "ts.h"
 
     // Funciones que no es necesario incluirlas (Ya que se importa desde y.tab.h). 
     // Se declaran unicamente para evitar warning [-Wimplicit-function-declaration] al complilar.
     int yyerror(char *msg);
-    int push_TS(char*, char*);
 %}
 
 %option noyywrap
@@ -68,7 +67,7 @@ long|LONG  			    {	return LONG;    }
 {CONST_INT}    			{   
                             int num = atoi(yytext); 
                             if(num >= COTA_INT*(-1) && num <= COTA_INT){
-                                push_TS("CONST_INT", yytext);
+                                insertarTokenEnTS("CONST_INT", yytext);
                                 return CONST_INT; 
                             } else {
                                 char msg[300];
@@ -80,7 +79,7 @@ long|LONG  			    {	return LONG;    }
                             double n;
 				            n = atof(yytext);
 				            if(n >= COTA_FLOAT*(-1) && n <= COTA_FLOAT){
-					            push_TS("CONST_REAL", yytext);
+					            insertarTokenEnTS("CONST_REAL", yytext);
 					            return CONST_REAL; 
 				            } else {
                                 char msg[300];
@@ -89,8 +88,8 @@ long|LONG  			    {	return LONG;    }
 				            }
 						}
 {CONST_STR}    			{	int cantCaracteres = strlen(yytext);
-					        if(cantCaracteres <= 32) { // Se cuentan las comillas tambien
-						        push_TS("CONST_STR", yytext);
+					        if(cantCaracteres <= COTA_STR) { // Se cuentan las comillas tambien
+						        insertarTokenEnTS("CONST_STR", yytext);
 						        return CONST_STR;
 					        } else {
                                 char msg[300];
@@ -98,9 +97,9 @@ long|LONG  			    {	return LONG;    }
                                 yyerror(msg);
 					        }
 						}
-{ID}        			{	int cantCaracteres = strlen(yytext);
-					        if(cantCaracteres <= 20) {
-						        push_TS("ID", yytext); 
+{ID}        			{	yylval.str_val = strdup(yytext);
+							int cantCaracteres = strlen(yylval.str_val);
+					        if(cantCaracteres <= COTA_ID) {
 						        return ID; 
 					        } else {
                                 char msg[300];

@@ -3,27 +3,24 @@
     #include <stdlib.h>
     #include <string.h>
     #include "y.tab.h"
+	#include "constantes.h"
 	#include "tercetos.h"
-    #define OK 1
-    #define ERROR 0
+	#include "ts.h"
 
+	// Declaraciones mandatory para quitar warnings
     int yylineno;
     FILE  *yyin;
     int yylex();
     int yyerror(char *msg);
+	int yyparse();
 
-    // Variables y metodos para la tabla de simbolos. 
-    struct struct_tablaSimbolos
-    {
-	    char nombre[100];
-	    char tipo[100];
-	    char valor[50];
-	    char longitud[100];
-    };
-    struct struct_tablaSimbolos tablaSimbolos[10000];
-    int crear_TS();
-    int push_TS(char*, char*);
-    int posicion_en_ts = 0;
+	// Otros
+	void insertarEnArrayDeclaracion(char *);
+	void validarDeclaracionTipoDato(char *);
+
+	// Arrays
+	char * arrayDeclaraciones[100];	// array para declaraciones
+	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -99,13 +96,13 @@ declaraciones:
 	| declaraciones declaracion	;
 
 declaracion:
-	lista_var OP_DOSP REAL				{}
-	| lista_var OP_DOSP STRING			{}
-	| lista_var OP_DOSP INTEGER			{};
+	lista_var OP_DOSP REAL				{validarDeclaracionTipoDato("REAL");}
+	| lista_var OP_DOSP STRING			{validarDeclaracionTipoDato("STRING");}
+	| lista_var OP_DOSP INTEGER			{validarDeclaracionTipoDato("INTEGER");}	;
 
 lista_var:
-	ID
-	| lista_var CAR_COMA ID	;
+	ID									{insertarEnArrayDeclaracion(yylval.str_val);}
+	| lista_var CAR_COMA ID				{insertarEnArrayDeclaracion(yylval.str_val);}	;
 
 bloque:
 	sentencia
@@ -211,7 +208,7 @@ int main(int argc, char *argv[])
 	    yyparse();
     }
     fclose(yyin);
-    crear_TS();
+    crearArchivoTS();
     return 0;
 }
 
@@ -222,51 +219,30 @@ int yyerror(char *msg)
     exit(1);
 }
 
-int crear_TS()
+void insertarEnArrayDeclaracion(char * val)
 {
-	FILE *archivo; 
-	int i;
-	archivo = fopen("ts.txt","w"); 
-
-	if (!archivo){	return ERROR; }
-
-	// fprintf(archivo, "Nombre\t\t\tTipo\t\t\tValor\t\t\tLongitud\n");
-	// Cabecera del archivo
-	fprintf(archivo, "%-30s%-12s%-30s%-12s\n","Nombre","Tipo","Valor","Longitud");
-	
-	for (i = 0; i < posicion_en_ts; i++)
-	{
-		if (strcmp(tablaSimbolos[i].tipo, "INTEGER") == 0 || strcmp(tablaSimbolos[i].tipo, "REAL")
-		|| strcmp(tablaSimbolos[i].tipo, "STRING"))
-		{  
-			fprintf(archivo,"%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
-		}
-		else
-		{
-			int longitud = strlen(tablaSimbolos[i].nombre);
-			fprintf(archivo,"_%-29s%-12s%-30s%-12d\n", 
-			tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].nombre, longitud);
-		}
-	}
-	fclose(archivo); 
-
-	return OK;
+	char * aux = (char *) malloc(sizeof(char) * (strlen(val) + 1));
+    strcpy(aux, val);
+	arrayDeclaraciones[posicion_en_arrayDeclaraciones] = aux;
+	posicion_en_arrayDeclaraciones++;
 }
-
-int push_TS(char* tipo, char* nombre)
-{
-	int i, posicion;
 	
-	for(i = 0; i < posicion_en_ts; i++)
+void validarDeclaracionTipoDato(char * tipo)
+{
+	int i;
+	for (i=0; i < posicion_en_arrayDeclaraciones; i++)
 	{
-		if(strcmp(tablaSimbolos[i].nombre, nombre) == 0)
+		if(existeTokenEnTS(arrayDeclaraciones[i]) == NO_EXISTE)
 		{
-			return i;
+			insertarTokenEnTS(tipo,arrayDeclaraciones[i]);
+		}
+		else 
+		{
+			char msg[300];
+			sprintf(msg, "ERROR en etapa GCI - Variable \'%s\'ya declarada", arrayDeclaraciones[i]);
+			yyerror(msg);
 		}
 	}
-	strcpy(tablaSimbolos[posicion_en_ts].tipo, tipo);
-	strcpy(tablaSimbolos[posicion_en_ts].nombre, nombre);
-	posicion = posicion_en_ts;
-	posicion_en_ts++;
-	return posicion;
+	// Reinicio el contador para leer otro tipo de dato
+	posicion_en_arrayDeclaraciones = 0;
 }

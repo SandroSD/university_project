@@ -13,6 +13,14 @@
     int yylex();
     int yyerror(char *msg);
 	int yyparse();
+
+	// Otros
+	void insertarEnArrayDeclaracion(char *);
+	void validarDeclaracionTipoDato(char *);
+
+	// Arrays
+	char * arrayDeclaraciones[100];	// array para declaraciones
+	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -88,13 +96,13 @@ declaraciones:
 	| declaraciones declaracion	;
 
 declaracion:
-	lista_var OP_DOSP REAL				{}
-	| lista_var OP_DOSP STRING			{}
-	| lista_var OP_DOSP INTEGER			{};
+	lista_var OP_DOSP REAL				{validarDeclaracionTipoDato("REAL");}
+	| lista_var OP_DOSP STRING			{validarDeclaracionTipoDato("STRING");}
+	| lista_var OP_DOSP INTEGER			{validarDeclaracionTipoDato("INTEGER");}	;
 
 lista_var:
-	ID
-	| lista_var CAR_COMA ID	;
+	ID									{insertarEnArrayDeclaracion(yylval.str_val);}
+	| lista_var CAR_COMA ID				{insertarEnArrayDeclaracion(yylval.str_val);}	;
 
 bloque:
 	sentencia
@@ -200,7 +208,7 @@ int main(int argc, char *argv[])
 	    yyparse();
     }
     fclose(yyin);
-    crear_TS();
+    crearArchivoTS();
     return 0;
 }
 
@@ -209,4 +217,32 @@ int yyerror(char *msg)
     fflush(stderr);
     fprintf(stderr, "\n\n--- ERROR ---\nAt line %d: \'%s\'.\n\n", yylineno, msg);
     exit(1);
+}
+
+void insertarEnArrayDeclaracion(char * val)
+{
+	char * aux = (char *) malloc(sizeof(char) * (strlen(val) + 1));
+    strcpy(aux, val);
+	arrayDeclaraciones[posicion_en_arrayDeclaraciones] = aux;
+	posicion_en_arrayDeclaraciones++;
+}
+	
+void validarDeclaracionTipoDato(char * tipo)
+{
+	int i;
+	for (i=0; i < posicion_en_arrayDeclaraciones; i++)
+	{
+		if(existeTokenEnTS(arrayDeclaraciones[i]) == NO_EXISTE)
+		{
+			insertarTokenEnTS(tipo,arrayDeclaraciones[i]);
+		}
+		else 
+		{
+			char msg[300];
+			sprintf(msg, "ERROR en etapa GCI - Variable \'%s\'ya declarada", arrayDeclaraciones[i]);
+			yyerror(msg);
+		}
+	}
+	// Reinicio el contador para leer otro tipo de dato
+	posicion_en_arrayDeclaraciones = 0;
 }

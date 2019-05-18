@@ -7,6 +7,10 @@
 #define COTA_STR 32
 #define COTA_ID 30
 
+// Existencia de token
+#define EXISTE 1
+#define NO_EXISTE 0
+
 // Variable para debug
 #define DEBUG 0
 

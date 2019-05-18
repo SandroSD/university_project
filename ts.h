@@ -16,13 +16,11 @@ struct struct_tablaSimbolos
 };
 struct struct_tablaSimbolos tablaSimbolos[10000];
 
-int crear_TS();
-int push_TS(char *, char *);
-int crearArchivoTS2();
-int insertar_TS(char *, char *);
+void insertarTokenEnTS(char *, char *);
+int existeTokenEnTS(char *);
 char *recuperarTipoTS(char *);
+char *recuperarValorTS(char *);
 int crearArchivoTS();
 void debugTS();
-char *recuperarValorTS(char *);
 
 #endif

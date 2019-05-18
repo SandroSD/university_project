@@ -3,6 +3,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include "y.tab.h"
+	#include "tercetos.h"
     #define OK 1
     #define ERROR 0
 

@@ -21,6 +21,9 @@
 	// Arrays
 	char * arrayDeclaraciones[100];	// array para declaraciones
 	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
+
+	// Auxiliar para indices de tercetos;
+	int indiceExpresion, indiceTermino, indiceFactor;
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -149,9 +152,9 @@ lista_id:
 	| ID ;
 	  
 entrada_salida:
-	GET		{	printf("\t\tGET\n"); 	} ID
-	| DISPLAY	{	printf("\t\tDISPLAY\n");} ID
-	| DISPLAY	{	printf("\t\tDISPLAY\n");} CONST_STR	;
+	GET	ID				{	crearTerceto("GET",yylval.str_val,"_");	}
+	| DISPLAY ID 		{	crearTerceto("DISPLAY",yylval.str_val,"_");	}
+	| DISPLAY CONST_STR	{	crearTerceto("DISPLAY",yylval.str_val,"_");	};
 
 seleccion:
 	IF CAR_PA condicion CAR_PC THEN 
@@ -178,21 +181,49 @@ comparador:
 	CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;
 
 expresion:
-	termino
+	termino	{	indiceExpresion = indiceTermino;	}
 	| expresion OP_SUM termino
-	| expresion OP_RES termino	;
+	{
+		char ladoIzquierdo[8];
+		sprintf(ladoIzquierdo, "[%d]", indiceExpresion);
+		char ladoDerecho[8];
+		sprintf(ladoDerecho, "[%d]", indiceTermino);
+		indiceTermino = crearTerceto("+",ladoIzquierdo,ladoDerecho);
+	}
+	| expresion OP_RES termino	
+	{
+		char ladoIzquierdo[8];
+		sprintf(ladoIzquierdo, "[%d]", indiceExpresion);
+		char ladoDerecho[8];
+		sprintf(ladoDerecho, "[%d]", indiceTermino);
+		indiceTermino = crearTerceto("-",ladoIzquierdo,ladoDerecho);
+	};
 
 termino:
-	factor
-	| termino OP_MUL factor
-	| termino OP_DIV factor	;
+	factor	{	indiceTermino = indiceFactor;	}
+	| termino OP_MUL factor		
+	{
+		char ladoIzquierdo[8];
+		sprintf(ladoIzquierdo, "[%d]", indiceTermino);
+		char ladoDerecho[8];
+		sprintf(ladoDerecho, "[%d]", indiceFactor);
+		indiceTermino = crearTerceto("*",ladoIzquierdo,ladoDerecho);
+	}
+	| termino OP_DIV factor		
+	{
+		char ladoIzquierdo[8];
+		sprintf(ladoIzquierdo, "[%d]", indiceTermino);
+		char ladoDerecho[8];
+		sprintf(ladoDerecho, "[%d]", indiceFactor);
+		indiceTermino = crearTerceto("/",ladoIzquierdo,ladoDerecho);
+	}	;
 
 factor:
-	ID
-	| CONST_INT
-	| CONST_REAL
-	| CONST_STR
-	| CAR_PA expresion CAR_PC ;
+	ID					{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
+	| CONST_INT			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
+	| CONST_REAL		{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
+	| CONST_STR			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
+	| CAR_PA expresion CAR_PC;
 
 %%
 
@@ -209,6 +240,7 @@ int main(int argc, char *argv[])
     }
     fclose(yyin);
     crearArchivoTS();
+	crearArchivoTercetosIntermedia();
     return 0;
 }
 

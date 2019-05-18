@@ -2,20 +2,31 @@
 
 int x;
 int tamLista = 0;
+int tamTercetos = 0;
 
-int CrearTerceto(int p1, int p2, int p3, lista_tercetos_t *p)
+// int CrearTerceto(int p1, int p2, int p3, lista_tercetos_t *p)
+// {
+//     terceto_t terc;
+//     terc.operacion = p1;
+//     terc.opIzq = p2;
+//     terc.opDer = p3;
+//     return InsertarEnLT(p, &terc) - 1;
+// }
+
+int crearTerceto(char *operador, char *operando1, char *operando2)
 {
-    terceto_t terc;
-    terc.operacion = p1;
-    terc.opIzq = p2;
-    terc.opDer = p3;
-    return InsertarEnLT(p, &terc) - 1;
+    int indiceTercetoCreado = tamTercetos;
+    strcpy(tercetos[tamTercetos].operador, operador);
+    strcpy(tercetos[tamTercetos].operandoIzq, operando1);
+    strcpy(tercetos[tamTercetos].operandoDer, operando2);
+    tamTercetos++;
+    return indiceTercetoCreado;
 }
 
 int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
 {
-    //Esto inserta al terceto en la lista y devuelve su posici�n.
-    //La posicion puede ser tomada como el n�mero del mismo.
+    //Esto inserta al terceto en la lista y devuelve su posicion.
+    //La posicion puede ser tomada como el numero del mismo.
     t_node *nue;
     nue = (t_node *)malloc(sizeof(t_node));
     if (!nue)
@@ -214,4 +225,28 @@ int NegarOperador(int op)
     }
 
     return op_negado;
+}
+
+int crearArchivoTercetosIntermedia()
+{
+    FILE *archivo;
+    int i;
+    archivo = fopen("intermedia.txt", "w");
+
+    if (!archivo)
+    {
+        return ERROR;
+    }
+
+    // Cabecera del archivo
+    fprintf(archivo, "Lista de Tercetos\n");
+
+    // Se escribe cada terceto
+    for (i = 0; i < tamTercetos; i++)
+    {
+        fprintf(archivo, "[%d] (%s, %s, %s)\n", i, tercetos[i].operador, tercetos[i].operandoIzq, tercetos[i].operandoDer);
+    }
+    fclose(archivo);
+
+    return TODO_OK;
 }

@@ -27,7 +27,7 @@
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
-// Como la variable yytext (global) sera sobrescrita, debera guardarse su valor en yyval.
+// Como la variable yytext (global de lexico) sera sobrescrita, debera guardarse su valor en yyval.
 // Ejemplo: strcpy(yylval.str, yytext);
 // Mas info: http://www.gnu.org/software/bison/manual/html_node/Union-Decl.html#Union-Decl
 %union {
@@ -83,6 +83,7 @@
 // Reglas gramaticales
 %%
 
+// Seccion 1
 programa:   
 	{	printf("\tInicia el COMPILADOR\n\n");	} 
 	est_declaracion bloque 
@@ -117,6 +118,7 @@ sentencia:
 	| asignacion
 	| entrada_salida	;
 
+// Seccion 2
 ciclo:
 	WHILE		{	printf("\t\tWHILE\n");	}
 	CAR_PA condicion CAR_PC bloque 
@@ -129,12 +131,14 @@ ciclo_especial:
 
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;
+
 lista_variables_constantes:
 			lista_variables_constantes CAR_COMA ID
 			| lista_variables_constantes CAR_COMA CONST_INT
 			| ID
 			| CONST_INT;
 
+// Seccion 3
 lista_expresiones: 
 			expresion 
 			| lista_expresiones CAR_COMA expresion ;
@@ -162,6 +166,7 @@ seleccion:
 	bloque
 	ENDIF 	{	printf("\t\t IF CON ELSE\n");	}	;
 
+// Seccion 4
 condicion:
 			comparacion
 			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}

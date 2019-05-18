@@ -2,13 +2,12 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "y.tab.h"
-    #define COTA_INT 2147483647
-    #define COTA_FLOAT 3.402823E+38
+    #include "constantes.h"
+    #include "ts.h"
 
     // Funciones que no es necesario incluirlas (Ya que se importa desde y.tab.h). 
     // Se declaran unicamente para evitar warning [-Wimplicit-function-declaration] al complilar.
     int yyerror(char *msg);
-    int push_TS(char*, char*);
 %}
 
 %option noyywrap
@@ -89,7 +88,7 @@ long|LONG  			    {	return LONG;    }
 				            }
 						}
 {CONST_STR}    			{	int cantCaracteres = strlen(yytext);
-					        if(cantCaracteres <= 32) { // Se cuentan las comillas tambien
+					        if(cantCaracteres <= COTA_STR) { // Se cuentan las comillas tambien
 						        push_TS("CONST_STR", yytext);
 						        return CONST_STR;
 					        } else {
@@ -99,7 +98,7 @@ long|LONG  			    {	return LONG;    }
 					        }
 						}
 {ID}        			{	int cantCaracteres = strlen(yytext);
-					        if(cantCaracteres <= 20) {
+					        if(cantCaracteres <= COTA_ID) {
 						        push_TS("ID", yytext); 
 						        return ID; 
 					        } else {

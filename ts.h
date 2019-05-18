@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-#define TODO_OK 1
-#define ERROR 0
+#include "constantes.h"
 
 // TABLA DE SIMBOLOS
 struct struct_tablaSimbolos

@@ -1,7 +1,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-    #include "y.tab.h" // Archivo (Header file) generado por bison
+    #include "y.tab.h"
     #define COTA_INT 2147483647
     #define COTA_FLOAT 3.402823E+38
 

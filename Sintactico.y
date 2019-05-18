@@ -4,26 +4,14 @@
     #include <string.h>
     #include "y.tab.h"
 	#include "tercetos.h"
-    #define OK 1
-    #define ERROR 0
+	#include "ts.h"
 
+	// Declaraciones mandatory para quitar warnings
     int yylineno;
     FILE  *yyin;
     int yylex();
     int yyerror(char *msg);
-
-    // Variables y metodos para la tabla de simbolos. 
-    struct struct_tablaSimbolos
-    {
-	    char nombre[100];
-	    char tipo[100];
-	    char valor[50];
-	    char longitud[100];
-    };
-    struct struct_tablaSimbolos tablaSimbolos[10000];
-    int crear_TS();
-    int push_TS(char*, char*);
-    int posicion_en_ts = 0;
+	int yyparse();
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -220,53 +208,4 @@ int yyerror(char *msg)
     fflush(stderr);
     fprintf(stderr, "\n\n--- ERROR ---\nAt line %d: \'%s\'.\n\n", yylineno, msg);
     exit(1);
-}
-
-int crear_TS()
-{
-	FILE *archivo; 
-	int i;
-	archivo = fopen("ts.txt","w"); 
-
-	if (!archivo){	return ERROR; }
-
-	// fprintf(archivo, "Nombre\t\t\tTipo\t\t\tValor\t\t\tLongitud\n");
-	// Cabecera del archivo
-	fprintf(archivo, "%-30s%-12s%-30s%-12s\n","Nombre","Tipo","Valor","Longitud");
-	
-	for (i = 0; i < posicion_en_ts; i++)
-	{
-		if (strcmp(tablaSimbolos[i].tipo, "INTEGER") == 0 || strcmp(tablaSimbolos[i].tipo, "REAL")
-		|| strcmp(tablaSimbolos[i].tipo, "STRING"))
-		{  
-			fprintf(archivo,"%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
-		}
-		else
-		{
-			int longitud = strlen(tablaSimbolos[i].nombre);
-			fprintf(archivo,"_%-29s%-12s%-30s%-12d\n", 
-			tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].nombre, longitud);
-		}
-	}
-	fclose(archivo); 
-
-	return OK;
-}
-
-int push_TS(char* tipo, char* nombre)
-{
-	int i, posicion;
-	
-	for(i = 0; i < posicion_en_ts; i++)
-	{
-		if(strcmp(tablaSimbolos[i].nombre, nombre) == 0)
-		{
-			return i;
-		}
-	}
-	strcpy(tablaSimbolos[posicion_en_ts].tipo, tipo);
-	strcpy(tablaSimbolos[posicion_en_ts].nombre, nombre);
-	posicion = posicion_en_ts;
-	posicion_en_ts++;
-	return posicion;
 }

@@ -223,7 +223,7 @@ condicion:
 				char *operadorNegado = negarComparador(operador);
 				modificarTerceto(indiceComparador,1,operadorNegado);
 			}
-			| comparacion { indiceComparador1 = indiceComparador } OP_AND comparacion	
+			| comparacion { indiceComparador1 = indiceComparador; } OP_AND comparacion	
 			{	printf("\t\tCONDICION DOBLE AND\n");
 				indiceComparador2 = indiceComparador;
 				// TODO: saltar afuera del bloque de la seleccion o ciclo.
@@ -232,7 +232,7 @@ condicion:
 				// modificarTerceto(indiceComparador1,2,armarIndiceI(indiceDesapilado));
 				// modificarTerceto(indiceComparador2,2,armarIndiceI(indiceDesapilado));
 			}
-			| comparacion { indiceComparador1 = indiceComparador } OP_OR  comparacion	
+			| comparacion { indiceComparador1 = indiceComparador; } OP_OR  comparacion	
 			{	printf("\t\tCONDICION DOBLE OR\n");		
 				indiceComparador2 = indiceComparador;
 				// TODO: negar compa 1 y saltar al bloque verdadero.

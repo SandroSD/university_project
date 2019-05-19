@@ -46,7 +46,7 @@
 	int indiceExpresion, indiceTermino, indiceFactor;
 
 	//Indice terceto
-	int indiceTerceto;
+	int indiceTerceto, indiceUltimo;
 
 	//Pilas
 	char * pilaIF[TAM_PILA];			// pila 0
@@ -162,12 +162,12 @@ sentencia:
 ciclo:
 	WHILE		{	printf("\t\tWHILE\n"); indiceTerceto=crearTerceto("ETIQ1","_","_"); apilar(PILA_WHILE, indiceTerceto);	}
 	CAR_PA condicion CAR_PC bloque 
-	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n"); indiceTerceto=desapilar(PILA_WHILE); 	}	;
+	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo)	}	;
 
 ciclo_especial:
 	WHILE		{ printf("\t\tWHILE (especial) \n"); indiceTerceto=crearTerceto("ETIQ1","_","_"); apilar(PILA_WHILE, indiceTerceto); } 
 	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
-	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
+	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo)	}	;
 
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;
@@ -208,7 +208,7 @@ seleccion:
 
 // Seccion 4
 condicion:
-			comparacion
+			comparacion                     {   printf("%\t\tCOMPARACION\n");}
 			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}
 			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
 			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");		}	;
@@ -218,7 +218,7 @@ comparacion:
 			| longitud comparador expresion;
 
 comparador:
-	CMP_MAYOR { printf(yylval.str_val); crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MAYOR),"_","_");} 
+	CMP_MAYOR { crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MAYOR),"_","_");} 
 	| CMP_MENOR {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MENOR),"_","_");}
 	| CMP_MAYORIGUAL {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MAYORIGUAL),"_","_");} 
 	| CMP_MENORIGUAL {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MENORIGUAL),"_","_");} 

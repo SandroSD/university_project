@@ -1,7 +1,7 @@
 #include "tercetos.h"
 
-int x;
-int tamLista = 0;
+// int x;
+// int tamLista = 0;
 int tamTercetos = 0;
 
 // int CrearTerceto(int p1, int p2, int p3, lista_tercetos_t *p)
@@ -23,230 +23,263 @@ int crearTerceto(char *operador, char *operando1, char *operando2)
     return indiceTercetoCreado;
 }
 
-/*int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
+int modificarTerceto(int indice, int posDentroTerceto, char *valor)
 {
-    //Esto inserta al terceto en la lista y devuelve su posicion.
-    //La posicion puede ser tomada como el numero del mismo.
-    t_node *nue;
-    nue = (t_node *)malloc(sizeof(t_node));
-    if (!nue)
-        return 0;
-    nue->info = *d;
-    if (DEBUG)
-        printf("-----------Insertar En Lista de Tercetos %d %d %d \n", nue->info.operacion, nue->info.opIzq, nue->info.opDer);
-    nue->sig = NULL;
-    nue->ant = *p;
-    if (*p)
-        (*p)->sig = nue;
-    *p = nue;
-
-    tamLista++;
-    return tamLista;
-}*/
-
-int insertarEnLT(lista_tercetos_t *p, struct_Terceto *d)
-{
-    //Esto inserta al terceto en la lista y devuelve su posicion.
-    //La posicion puede ser tomada como el numero del mismo.
-    t_node *nue;
-    nue = (t_node *)malloc(sizeof(t_node));
-    if (!nue)
-        return 0;
-    nue->info = *d;
-    if (DEBUG)
-        printf("-----------Insertar En Lista de Tercetos %d %d %d \n", nue->info.operador, nue->info.operandoIzq, nue->info.operandoDer);
-    nue->sig = NULL;
-    nue->ant = *p;
-    if (*p)
-        (*p)->sig = nue;
-    *p = nue;
-
-    tamLista++;
-    return tamLista;
-}
-
-void EliminarUltimoTerceto(lista_tercetos_t *p)
-{
-    if (*p != NULL)
+    switch (posDentroTerceto)
     {
-        t_node *aux = *p;
-        *p = aux->ant;
-        if (*p != NULL)
-        {
-            (*p)->sig = NULL;
-        }
-        free(aux);
-        tamLista--;
+    case 1:
+        strcpy(tercetos[indice].operador, valor);
+        break;
+    case 2:
+        strcpy(tercetos[indice].operandoIzq, valor);
+        break;
+    case 3:
+        strcpy(tercetos[indice].operandoDer, valor);
+        break;
+    default:
+        return ERROR;
     }
+    return TODO_OK;
 }
 
-void VaciarLT(lista_tercetos_t *p)
+char * armarIndiceI(int intIndice)
 {
-    t_node *pri = *p, *act = *p, *aux;
-    if (*p)
-        pri = (*p)->ant;
-    while (act)
-    {
-        if (act->sig)
-            act->sig->ant = act->ant;
-        if (act->ant)
-        {
-            act->ant->sig = act->sig;
-            *p = act->ant;
-        }
-        else
-            *p = act->sig;
-        //printf("NARIPETA %d %d %d ",act->info.operacion,act->info.opIzq,act->info.opDer);
-        aux = act;
-        act = act->sig;
-
-        free(aux);
-    }
-    act = pri;
-    while (act)
-    {
-        if (act->sig)
-            act->sig->ant = act->ant;
-        if (act->ant)
-        {
-            act->ant->sig = act->sig;
-            *p = act->ant;
-        }
-        else
-            *p = act->sig;
-        aux = act;
-        act = act->ant;
-        free(aux);
-    }
-
-    tamLista = 0;
+	static char strIndice[8];
+	sprintf(strIndice, "[%d]", intIndice);
+	return strIndice;
 }
 
-void ObtenerItemLT(lista_tercetos_t *p, int pos, terceto_t *nodo)
+char * armarIndiceD(int intIndice)
 {
-    t_node *act = *p;
-    int cont = 0;
-
-    if (pos < 0)
-        nodo = NULL;
-
-    if (act)
-    {
-        while (act->ant)
-            act = act->ant;
-        while (act)
-        {
-            if (cont == pos)
-            {
-                *nodo = act->info;
-                return;
-            }
-            else
-            {
-                cont++;
-                act = act->sig;
-            }
-        }
-    }
-
-    nodo = NULL;
+	static char strIndice[8];
+	sprintf(strIndice, "[%d]", intIndice);
+	return strIndice;
 }
 
-void ModificarTerceto(int op, int li, int ld, lista_tercetos_t *p, int pos)
-{
-    t_node *act = *p;
-    int cont = 0;
+// int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
+// {
+//     //Esto inserta al terceto en la lista y devuelve su posicion.
+//     //La posicion puede ser tomada como el numero del mismo.
+//     t_node *nue;
+//     nue = (t_node *)malloc(sizeof(t_node));
+//     if (!nue)
+//         return 0;
+//     nue->info = *d;
+//     if (DEBUG)
+//         printf("-----------Insertar En Lista de Tercetos %d %d %d \n", nue->info.operacion, nue->info.opIzq, nue->info.opDer);
+//     nue->sig = NULL;
+//     nue->ant = *p;
+//     if (*p)
+//         (*p)->sig = nue;
+//     *p = nue;
 
-    if (act)
-    {
-        while (act->ant)
-            act = act->ant;
-        while (act)
-        {
-            if (cont == pos)
-            {
-                if (op != NO_MODIF && op != NEGAR)
-                {
-                    act->info.operacion = op;
-                }
-                if (op == NEGAR)
-                {
-                    act->info.operacion = NegarOperador(act->info.operacion);
-                }
-                if (li != NO_MODIF)
-                {
-                    act->info.opIzq = li;
-                }
-                if (ld != NO_MODIF)
-                {
-                    act->info.opDer = ld;
-                }
-                return;
-            }
-            else
-            {
-                cont++;
-                act = act->sig;
-            }
-        }
-    }
-}
+//     tamLista++;
+//     return tamLista;
+// }
 
-void NegarOperadorTerceto(int pos, lista_tercetos_t *lt)
-{
-    terceto_t tercetoAux;
+// int insertarEnLT(lista_tercetos_t *p, struct_Terceto *d)
+// {
+//     //Esto inserta al terceto en la lista y devuelve su posicion.
+//     //La posicion puede ser tomada como el numero del mismo.
+//     t_node *nue;
+//     nue = (t_node *)malloc(sizeof(t_node));
+//     if (!nue)
+//         return 0;
+//     nue->info = *d;
+//     if (DEBUG)
+//         printf("-----------Insertar En Lista de Tercetos %d %d %d \n", nue->info.operador, nue->info.operandoIzq, nue->info.operandoDer);
+//     nue->sig = NULL;
+//     nue->ant = *p;
+//     if (*p)
+//         (*p)->sig = nue;
+//     *p = nue;
 
-    ObtenerItemLT(lt, pos, &tercetoAux);
-    ModificarTerceto(NegarOperador(tercetoAux.operacion), NO_MODIF, NO_MODIF, lt, pos);
-}
+//     tamLista++;
+//     return tamLista;
+// }
 
-int NegarOperador(int op)
-{
-    int op_negado;
+// void EliminarUltimoTerceto(lista_tercetos_t *p)
+// {
+//     if (*p != NULL)
+//     {
+//         t_node *aux = *p;
+//         *p = aux->ant;
+//         if (*p != NULL)
+//         {
+//             (*p)->sig = NULL;
+//         }
+//         free(aux);
+//         tamLista--;
+//     }
+// }
 
-    switch (op)
-    {
-    case TERC_MENOR:
-        op_negado = TERC_JAE;
-        break;
-    case TERC_MENOR_IGUAL:
-        op_negado = TERC_JA;
-        break;
-    case TERC_IGUAL:
-        op_negado = TERC_JNE;
-        break;
-    case TERC_DISTINTO:
-        op_negado = TERC_JE;
-        break;
-    case TERC_MAYOR_IGUAL:
-        op_negado = TERC_JB;
-        break;
-    case TERC_MAYOR:
-        op_negado = TERC_JBE;
-        break;
+// void VaciarLT(lista_tercetos_t *p)
+// {
+//     t_node *pri = *p, *act = *p, *aux;
+//     if (*p)
+//         pri = (*p)->ant;
+//     while (act)
+//     {
+//         if (act->sig)
+//             act->sig->ant = act->ant;
+//         if (act->ant)
+//         {
+//             act->ant->sig = act->sig;
+//             *p = act->ant;
+//         }
+//         else
+//             *p = act->sig;
+//         //printf("NARIPETA %d %d %d ",act->info.operacion,act->info.opIzq,act->info.opDer);
+//         aux = act;
+//         act = act->sig;
 
-    case TERC_JB:
-        op_negado = TERC_JAE;
-        break;
-    case TERC_JBE:
-        op_negado = TERC_JA;
-        break;
-    case TERC_JE:
-        op_negado = TERC_JNE;
-        break;
-    case TERC_JNE:
-        op_negado = TERC_JE;
-        break;
-    case TERC_JAE:
-        op_negado = TERC_JB;
-        break;
-    case TERC_JA:
-        op_negado = TERC_JBE;
-        break;
-    }
+//         free(aux);
+//     }
+//     act = pri;
+//     while (act)
+//     {
+//         if (act->sig)
+//             act->sig->ant = act->ant;
+//         if (act->ant)
+//         {
+//             act->ant->sig = act->sig;
+//             *p = act->ant;
+//         }
+//         else
+//             *p = act->sig;
+//         aux = act;
+//         act = act->ant;
+//         free(aux);
+//     }
 
-    return op_negado;
-}
+//     tamLista = 0;
+// }
+
+// void ObtenerItemLT(lista_tercetos_t *p, int pos, terceto_t *nodo)
+// {
+//     t_node *act = *p;
+//     int cont = 0;
+
+//     if (pos < 0)
+//         nodo = NULL;
+
+//     if (act)
+//     {
+//         while (act->ant)
+//             act = act->ant;
+//         while (act)
+//         {
+//             if (cont == pos)
+//             {
+//                 *nodo = act->info;
+//                 return;
+//             }
+//             else
+//             {
+//                 cont++;
+//                 act = act->sig;
+//             }
+//         }
+//     }
+
+//     nodo = NULL;
+// }
+
+// void ModificarTerceto(int op, int li, int ld, lista_tercetos_t *p, int pos)
+// {
+//     t_node *act = *p;
+//     int cont = 0;
+
+//     if (act)
+//     {
+//         while (act->ant)
+//             act = act->ant;
+//         while (act)
+//         {
+//             if (cont == pos)
+//             {
+//                 if (op != NO_MODIF && op != NEGAR)
+//                 {
+//                     act->info.operacion = op;
+//                 }
+//                 if (op == NEGAR)
+//                 {
+//                     act->info.operacion = NegarOperador(act->info.operacion);
+//                 }
+//                 if (li != NO_MODIF)
+//                 {
+//                     act->info.opIzq = li;
+//                 }
+//                 if (ld != NO_MODIF)
+//                 {
+//                     act->info.opDer = ld;
+//                 }
+//                 return;
+//             }
+//             else
+//             {
+//                 cont++;
+//                 act = act->sig;
+//             }
+//         }
+//     }
+// }
+
+// void NegarOperadorTerceto(int pos, lista_tercetos_t *lt)
+// {
+//     terceto_t tercetoAux;
+
+//     ObtenerItemLT(lt, pos, &tercetoAux);
+//     ModificarTerceto(NegarOperador(tercetoAux.operacion), NO_MODIF, NO_MODIF, lt, pos);
+// }
+
+// int NegarOperador(int op)
+// {
+//     int op_negado;
+
+//     switch (op)
+//     {
+//     case TERC_MENOR:
+//         op_negado = TERC_JAE;
+//         break;
+//     case TERC_MENOR_IGUAL:
+//         op_negado = TERC_JA;
+//         break;
+//     case TERC_IGUAL:
+//         op_negado = TERC_JNE;
+//         break;
+//     case TERC_DISTINTO:
+//         op_negado = TERC_JE;
+//         break;
+//     case TERC_MAYOR_IGUAL:
+//         op_negado = TERC_JB;
+//         break;
+//     case TERC_MAYOR:
+//         op_negado = TERC_JBE;
+//         break;
+
+//     case TERC_JB:
+//         op_negado = TERC_JAE;
+//         break;
+//     case TERC_JBE:
+//         op_negado = TERC_JA;
+//         break;
+//     case TERC_JE:
+//         op_negado = TERC_JNE;
+//         break;
+//     case TERC_JNE:
+//         op_negado = TERC_JE;
+//         break;
+//     case TERC_JAE:
+//         op_negado = TERC_JB;
+//         break;
+//     case TERC_JA:
+//         op_negado = TERC_JBE;
+//         break;
+//     }
+
+//     return op_negado;
+// }
 
 int crearArchivoTercetosIntermedia()
 {

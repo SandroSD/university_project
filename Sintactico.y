@@ -7,6 +7,20 @@
 	#include "tercetos.h"
 	#include "ts.h"
 
+	#define TAM_PILA 100
+	#define TODO_OK 1
+	#define ERROR 0
+	#define EXISTE 1
+	#define NO_EXISTE 0
+	#define PILA_IF 0
+	#define PILA_DECLARACION 1
+	#define PILA_WHILE 2
+	#define PILA_ASIGNACION 3
+	#define PILA_REPEAT 4
+	#define PILA_BETWEEN 5
+	#define TRUE 1
+	#define FALSE 0
+
 	// Declaraciones mandatory para quitar warnings
     int yylineno;
     FILE  *yyin;
@@ -14,9 +28,15 @@
     int yyerror(char *msg);
 	int yyparse();
 
+
 	// Otros
 	void insertarEnArrayDeclaracion(char *);
 	void validarDeclaracionTipoDato(char *);
+	void apilar(int nroPila, char * val);
+	int desapilar(int nroPila);
+	int pilaVacia(int tope);
+	int pilaLlena(int tope);
+	void debugPila(int nroPila, int tope);
 
 	// Arrays
 	char * arrayDeclaraciones[100];	// array para declaraciones
@@ -24,6 +44,26 @@
 
 	// Auxiliar para indices de tercetos;
 	int indiceExpresion, indiceTermino, indiceFactor;
+
+	//Indice terceto
+	int indiceTerceto, indiceUltimo;
+
+	//Pilas
+	char * pilaIF[TAM_PILA];			// pila 0
+	char * pilaWhile[TAM_PILA];			// pila 1
+	char * pilaAsignacion[TAM_PILA];	// pila 3
+	char * pilaRepeat[TAM_PILA];		// pila 4
+	char * pilaBetween[TAM_PILA];		// pila 5
+	int tope_pila_if=0;				// pila 0
+	int tope_pila_while=0;			// pila 1
+	int tope_pila_asignacion=0;		// pila 3
+	int tope_pila_repeat=0;			// pila 4
+	int tope_pila_between=0;			// pila 5
+
+	//Flags
+	int flagWHILE = FALSE;
+	int flagWHILEOR = FALSE;
+	int flagWHILEAND = FALSE;
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -120,14 +160,14 @@ sentencia:
 
 // Seccion 2
 ciclo:
-	WHILE		{	printf("\t\tWHILE\n");	}
+	WHILE		{	printf("\t\tWHILE\n"); indiceTerceto=crearTerceto("ETIQ1","_","_"); apilar(PILA_WHILE, indiceTerceto);	}
 	CAR_PA condicion CAR_PC bloque 
-	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n");	}	;
+	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo);	}	;
 
 ciclo_especial:
-	WHILE		{ printf("\t\tWHILE (especial) \n");	} 
+	WHILE		{ printf("\t\tWHILE (especial) \n"); indiceTerceto=crearTerceto("ETIQ1","_","_"); apilar(PILA_WHILE, indiceTerceto); } 
 	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
-	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n");	}	;
+	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo);	}	;
 
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;
@@ -168,7 +208,7 @@ seleccion:
 
 // Seccion 4
 condicion:
-			comparacion
+			comparacion                     {   printf("%\t\tCOMPARACION\n");}
 			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}
 			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
 			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");		}	;
@@ -178,7 +218,12 @@ comparacion:
 			| longitud comparador expresion;
 
 comparador:
-	CMP_MAYOR | CMP_MENOR | CMP_MAYORIGUAL | CMP_MENORIGUAL | CMP_IGUAL | CMP_DISTINTO	;
+	CMP_MAYOR { crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MAYOR),"_","_");} 
+	| CMP_MENOR {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MENOR),"_","_");}
+	| CMP_MAYORIGUAL {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MAYORIGUAL),"_","_");} 
+	| CMP_MENORIGUAL {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_MENORIGUAL),"_","_");} 
+	| CMP_IGUAL {crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_IGUAL),"_","_");} 
+	| CMP_DISTINTO	{crearTerceto("CMP",,); crearTerceto(valorComparacion(CMP_DISTINTO),"_","_");} ;
 
 expresion:
 	termino	{	indiceExpresion = indiceTermino;	}
@@ -277,4 +322,208 @@ void validarDeclaracionTipoDato(char * tipo)
 	}
 	// Reinicio el contador para leer otro tipo de dato
 	posicion_en_arrayDeclaraciones = 0;
+}
+
+char * valorComparacionCICLO(char * val){
+	if(strcmp("=", val) == 0){
+		return "BEQ";
+	} else if(strcmp(">=", val) == 0){
+		return "BGE";
+	} else if(strcmp(">", val) == 0){
+		return "BGT";
+	} else if(strcmp("<=", val) == 0){
+		return "BLE";
+	} else if(strcmp("<", val) == 0){
+		return "BLT";
+	} else if(strcmp("><", val) == 0){
+		return "BNE";
+	} else {
+		// NUNCA DEBERIA CAER ACA
+		return val;
+	}
+}
+
+char * valorComparacion(char * val){
+	if(strcmp("=", val) == 0){
+		return "BNE";
+	} else if(strcmp(">=", val) == 0){
+		return "BLT";
+	} else if(strcmp(">", val) == 0){
+		return "BLE";
+	} else if(strcmp("<=", val) == 0){
+		return "BGT";
+	} else if(strcmp("<", val) == 0){
+		return "BGE";
+	} else if(strcmp("><", val) == 0){
+		return "BEQ";
+	} else {
+		// NUNCA DEBERIA CAER ACA
+		return val;
+	}
+}
+
+// FUNCIONES DE PILA
+void apilar(int nroPila, char * val)
+{
+	switch(nroPila){
+		case PILA_IF:
+			
+			
+			if(pilaLlena(PILA_IF) == TRUE){
+				printf("Error: Se exedio el tamano de la pila de IF.\n");
+				system ("Pause");
+				exit (1);
+			}
+			pilaIF[tope_pila_if]=val;
+			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
+			tope_pila_if++;
+			break;
+		
+		case PILA_WHILE:
+		
+			if(pilaLlena(PILA_WHILE) == TRUE){
+				printf("Error: Se exedio el tamano de la pila de WHILE.\n");
+				system ("Pause");
+				exit (1);
+			}
+			pilaWhile[tope_pila_while]=val;
+			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
+			tope_pila_while++;
+			break;
+		case PILA_ASIGNACION:
+		
+			if(pilaLlena(PILA_ASIGNACION) == TRUE){
+				printf("Error: Se exedio el tamano de la pila de ASIGNACION.\n");
+				system ("Pause");
+				exit (1);
+			}
+			pilaAsignacion[tope_pila_asignacion]=val;
+			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
+			tope_pila_asignacion++;
+			break;	
+		case PILA_REPEAT:
+			if(pilaLlena(PILA_REPEAT) == TRUE){
+				printf("Error: Se exedio el tamano de la pila de REPEAT.\n");
+				system ("Pause");
+				exit (1);
+			}
+			pilaRepeat[tope_pila_repeat]=val;
+			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
+			tope_pila_repeat++;
+			break;	
+			
+		case PILA_BETWEEN:
+			if(pilaLlena(PILA_BETWEEN) == TRUE){
+				printf("Error: Se exedio el tamano de la pila de BETWEEN.\n");
+				system ("Pause");
+				exit (1);
+			}
+			pilaBetween[tope_pila_between]=val;
+			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
+			tope_pila_between++;
+			break;	
+		
+		default:
+			printf("\tError: La pila recibida no se reconoce\n",val);
+			system ("Pause");
+			exit (1);
+			break;
+	}
+
+}
+
+int desapilar(int nroPila)
+{
+	switch(nroPila){
+		case PILA_IF:
+			if(pilaVacia(tope_pila_if) == 0)
+			{
+				char * dato = pilaIF[tope_pila_if-1];
+				tope_pila_if--;	
+				printf("\tDESAPILAR #CELDA -> %s\n",dato);
+				return atoi(dato);		
+			} else {
+				printf("Error: La pila esta vacia.\n");
+				system ("Pause");
+				exit (1);
+			}
+			
+			break;
+		
+		case PILA_WHILE:
+		
+			if(pilaVacia(tope_pila_while) == 0)
+			{
+				char * dato = pilaWhile[tope_pila_while-1];
+				tope_pila_while--;	
+				printf("\tDESAPILAR #CELDA -> %s\n",dato);
+				return atoi(dato);		
+			} else {
+				finAnormal("Stack Error","La pila esta vacia");
+			}
+		
+			break;
+		case PILA_ASIGNACION:
+		
+			if(pilaVacia(tope_pila_asignacion) == 0)
+			{
+				char * dato = pilaAsignacion[tope_pila_asignacion-1];
+				tope_pila_asignacion--;	
+				printf("\tDESAPILAR #CELDA -> %s\n",dato);
+				return atoi(dato);		
+			} else {
+				finAnormal("Stack Error","La pila esta vacia");
+			}
+		
+			break;	
+		case PILA_REPEAT:
+		
+			if(pilaVacia(tope_pila_repeat) == 0)
+			{
+				char * dato = pilaRepeat[tope_pila_repeat-1];
+				tope_pila_repeat--;	
+				printf("\tDESAPILAR #CELDA -> %s\n",dato);
+				return atoi(dato);		
+			} else {
+				finAnormal("Stack Error","La pila esta vacia");
+			}
+		
+			break;	
+		
+		case PILA_BETWEEN:
+		
+			if(pilaVacia(tope_pila_between) == 0)
+			{
+				char * dato = pilaBetween[tope_pila_between-1];
+				tope_pila_between--;	
+				printf("\tDESAPILAR #CELDA -> %s\n",dato);
+				return atoi(dato);		
+			} else {
+				finAnormal("Stack Error","La pila esta vacia");
+			}
+		
+			break;	
+
+		default:
+			finAnormal("Stack Error","La pila recibida no se reconoce");
+			break;
+		
+	}
+	
+}
+
+int pilaVacia(int tope)
+{
+	if (tope-1 == -1){
+		return TRUE;
+	} 
+	return FALSE;
+}
+
+int pilaLlena(int tope)
+{
+	if (tope-1 == TAM_PILA-1){
+		return TRUE;
+	} 
+	return FALSE;
 }

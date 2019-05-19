@@ -143,9 +143,7 @@ ciclo:
 	{	printf("\t\tFIN DEL WHILE\n"); 
 		indiceUltimo=crearTerceto("BI","_","_"); 
 		sacar_de_pila(&pila, &indiceDesapilado); 
-		char ladoIzquierdo[8];
-		sprintf(ladoIzquierdo, "[%d]", indiceDesapilado);
-		modificarTerceto(indiceUltimo, 2, ladoIzquierdo);
+		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
 	}	;
 
 ciclo_especial:
@@ -250,38 +248,22 @@ expresion:
 	termino	{	indiceExpresion = indiceTermino;	}
 	| expresion OP_SUM termino
 	{
-		char ladoIzquierdo[8];
-		sprintf(ladoIzquierdo, "[%d]", indiceExpresion);
-		char ladoDerecho[8];
-		sprintf(ladoDerecho, "[%d]", indiceTermino);
-		indiceTermino = crearTerceto("+",ladoIzquierdo,ladoDerecho);
+		indiceExpresion = crearTerceto("+",armarIndiceI(indiceExpresion),armarIndiceD(indiceTermino));
 	}
 	| expresion OP_RES termino	
 	{
-		char ladoIzquierdo[8];
-		sprintf(ladoIzquierdo, "[%d]", indiceExpresion);
-		char ladoDerecho[8];
-		sprintf(ladoDerecho, "[%d]", indiceTermino);
-		indiceTermino = crearTerceto("-",ladoIzquierdo,ladoDerecho);
+		indiceExpresion = crearTerceto("-",armarIndiceI(indiceExpresion),armarIndiceD(indiceTermino));
 	};
 
 termino:
 	factor	{	indiceTermino = indiceFactor;	}
 	| termino OP_MUL factor		
 	{
-		char ladoIzquierdo[8];
-		sprintf(ladoIzquierdo, "[%d]", indiceTermino);
-		char ladoDerecho[8];
-		sprintf(ladoDerecho, "[%d]", indiceFactor);
-		indiceTermino = crearTerceto("*",ladoIzquierdo,ladoDerecho);
+		indiceTermino = crearTerceto("*",armarIndiceI(indiceTermino),armarIndiceD(indiceFactor));
 	}
 	| termino OP_DIV factor		
 	{
-		char ladoIzquierdo[8];
-		sprintf(ladoIzquierdo, "[%d]", indiceTermino);
-		char ladoDerecho[8];
-		sprintf(ladoDerecho, "[%d]", indiceFactor);
-		indiceTermino = crearTerceto("/",ladoIzquierdo,ladoDerecho);
+		indiceTermino = crearTerceto("/",armarIndiceI(indiceTermino),armarIndiceD(indiceFactor));
 	}	;
 
 factor:
@@ -345,166 +327,3 @@ void validarDeclaracionTipoDato(char * tipo)
 	// Reinicio el contador para leer otro tipo de dato
 	posicion_en_arrayDeclaraciones = 0;
 }
-
-// // FUNCIONES DE PILA
-// void apilar(int nroPila, char * val)
-// {
-// 	switch(nroPila){
-// 		case PILA_IF:
-// 			if(pilaLlena(PILA_IF) == TRUE){
-// 				printf("Error: Se exedio el tamano de la pila de IF.\n");
-// 				system ("Pause");
-// 				exit (1);
-// 			}
-// 			pilaIF[tope_pila_if]=val;
-// 			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
-// 			tope_pila_if++;
-// 			break;
-		
-// 		case PILA_WHILE:
-// 			if(pilaLlena(PILA_WHILE) == TRUE){
-// 				printf("Error: Se exedio el tamano de la pila de WHILE.\n");
-// 				system ("Pause");
-// 				exit (1);
-// 			}
-// 			pilaWhile[tope_pila_while]=val;
-// 			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
-// 			tope_pila_while++;
-// 			break;
-// 		case PILA_ASIGNACION:
-		
-// 			if(pilaLlena(PILA_ASIGNACION) == TRUE){
-// 				printf("Error: Se exedio el tamano de la pila de ASIGNACION.\n");
-// 				system ("Pause");
-// 				exit (1);
-// 			}
-// 			pilaAsignacion[tope_pila_asignacion]=val;
-// 			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
-// 			tope_pila_asignacion++;
-// 			break;	
-// 		case PILA_REPEAT:
-// 			if(pilaLlena(PILA_REPEAT) == TRUE){
-// 				printf("Error: Se exedio el tamano de la pila de REPEAT.\n");
-// 				system ("Pause");
-// 				exit (1);
-// 			}
-// 			pilaRepeat[tope_pila_repeat]=val;
-// 			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
-// 			tope_pila_repeat++;
-// 			break;	
-			
-// 		case PILA_BETWEEN:
-// 			if(pilaLlena(PILA_BETWEEN) == TRUE){
-// 				printf("Error: Se exedio el tamano de la pila de BETWEEN.\n");
-// 				system ("Pause");
-// 				exit (1);
-// 			}
-// 			pilaBetween[tope_pila_between]=val;
-// 			printf("\tAPILAR #CELDA ACTUAL -> %s\n",val);
-// 			tope_pila_between++;
-// 			break;	
-		
-// 		default:
-// 			printf("\tError: La pila recibida no se reconoce\n",val);
-// 			system ("Pause");
-// 			exit (1);
-// 			break;
-// 	}
-
-// }
-
-// int desapilar(int nroPila)
-// {
-// 	switch(nroPila){
-// 		case PILA_IF:
-// 			if(pilaVacia(tope_pila_if) == 0)
-// 			{
-// 				char * dato = pilaIF[tope_pila_if-1];
-// 				tope_pila_if--;	
-// 				printf("\tDESAPILAR #CELDA -> %s\n",dato);
-// 				return atoi(dato);		
-// 			} else {
-// 				printf("Error: La pila esta vacia.\n");
-// 				system ("Pause");
-// 				exit (1);
-// 			}
-			
-// 			break;
-		
-// 		case PILA_WHILE:
-		
-// 			if(pilaVacia(tope_pila_while) == 0)
-// 			{
-// 				char * dato = pilaWhile[tope_pila_while-1];
-// 				tope_pila_while--;	
-// 				printf("\tDESAPILAR #CELDA -> %s\n",dato);
-// 				return atoi(dato);		
-// 			} else {
-// 				finAnormal("Stack Error","La pila esta vacia");
-// 			}
-		
-// 			break;
-// 		case PILA_ASIGNACION:
-		
-// 			if(pilaVacia(tope_pila_asignacion) == 0)
-// 			{
-// 				char * dato = pilaAsignacion[tope_pila_asignacion-1];
-// 				tope_pila_asignacion--;	
-// 				printf("\tDESAPILAR #CELDA -> %s\n",dato);
-// 				return atoi(dato);		
-// 			} else {
-// 				finAnormal("Stack Error","La pila esta vacia");
-// 			}
-		
-// 			break;	
-// 		case PILA_REPEAT:
-		
-// 			if(pilaVacia(tope_pila_repeat) == 0)
-// 			{
-// 				char * dato = pilaRepeat[tope_pila_repeat-1];
-// 				tope_pila_repeat--;	
-// 				printf("\tDESAPILAR #CELDA -> %s\n",dato);
-// 				return atoi(dato);		
-// 			} else {
-// 				finAnormal("Stack Error","La pila esta vacia");
-// 			}
-		
-// 			break;	
-		
-// 		case PILA_BETWEEN:
-		
-// 			if(pilaVacia(tope_pila_between) == 0)
-// 			{
-// 				char * dato = pilaBetween[tope_pila_between-1];
-// 				tope_pila_between--;	
-// 				printf("\tDESAPILAR #CELDA -> %s\n",dato);
-// 				return atoi(dato);		
-// 			} else {
-// 				finAnormal("Stack Error","La pila esta vacia");
-// 			}
-		
-// 			break;	
-
-// 		default:
-// 			finAnormal("Stack Error","La pila recibida no se reconoce");
-// 			break;
-		
-// 	}
-	
-// }
-
-// int pilaVacia(int tope)
-// {
-// 	if (tope-1 == -1){
-// 		return TRUE;
-// 	} 
-// 	return FALSE;
-// }
-
-// int pilaLlena(int tope)
-// {
-// 	if (tope-1 == TAM_PILA-1){
-// 		return TRUE;
-// 	} 
-// 	return FALSE;
-// }

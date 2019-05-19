@@ -42,6 +42,20 @@ int modificarTerceto(int indice, int posDentroTerceto, char *valor)
     return TODO_OK;
 }
 
+char * armarIndiceI(int intIndice)
+{
+	static char strIndice[8];
+	sprintf(strIndice, "[%d]", intIndice);
+	return strIndice;
+}
+
+char * armarIndiceD(int intIndice)
+{
+	static char strIndice[8];
+	sprintf(strIndice, "[%d]", intIndice);
+	return strIndice;
+}
+
 // int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
 // {
 //     //Esto inserta al terceto en la lista y devuelve su posicion.

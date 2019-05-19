@@ -162,12 +162,12 @@ sentencia:
 ciclo:
 	WHILE		{	printf("\t\tWHILE\n"); indiceTerceto=crearTerceto("ETIQ1","_","_"); apilar(PILA_WHILE, indiceTerceto);	}
 	CAR_PA condicion CAR_PC bloque 
-	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo)	}	;
+	ENDWHILE	{	printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo);	}	;
 
 ciclo_especial:
 	WHILE		{ printf("\t\tWHILE (especial) \n"); indiceTerceto=crearTerceto("ETIQ1","_","_"); apilar(PILA_WHILE, indiceTerceto); } 
 	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
-	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo)	}	;
+	ENDWHILE	{ printf("\t\tFIN DEL WHILE\n"); indiceUltimo=crearTerceto("BI","_","_"); indiceTerceto=desapilar(PILA_WHILE); indiceTerceto=desapilar(PILA_WHILE); ModificarTerceto(-1,indiceTerceto,-1, ,indiceUltimo);	}	;
 
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	{ printf("\t\tLONGITUD (especial) \n");	} ;

@@ -23,7 +23,7 @@ int crearTerceto(char *operador, char *operando1, char *operando2)
     return indiceTercetoCreado;
 }
 
-int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
+/*int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
 {
     //Esto inserta al terceto en la lista y devuelve su posicion.
     //La posicion puede ser tomada como el numero del mismo.
@@ -34,6 +34,27 @@ int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
     nue->info = *d;
     if (DEBUG)
         printf("-----------Insertar En Lista de Tercetos %d %d %d \n", nue->info.operacion, nue->info.opIzq, nue->info.opDer);
+    nue->sig = NULL;
+    nue->ant = *p;
+    if (*p)
+        (*p)->sig = nue;
+    *p = nue;
+
+    tamLista++;
+    return tamLista;
+}*/
+
+int insertarEnLT(lista_tercetos_t *p, struct_Terceto *d)
+{
+    //Esto inserta al terceto en la lista y devuelve su posicion.
+    //La posicion puede ser tomada como el numero del mismo.
+    t_node *nue;
+    nue = (t_node *)malloc(sizeof(t_node));
+    if (!nue)
+        return 0;
+    nue->info = *d;
+    if (DEBUG)
+        printf("-----------Insertar En Lista de Tercetos %d %d %d \n", nue->info.operador, nue->info.operandoIzq, nue->info.operandoDer);
     nue->sig = NULL;
     nue->ant = *p;
     if (*p)

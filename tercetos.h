@@ -74,6 +74,7 @@ struct struct_Terceto
     char operandoDer[100];
 };
 struct struct_Terceto tercetos[10000];
+typedef lista_tercetos_t *listaTercetos;
 
 int crearTerceto(char*, char*, char*);
 // int CrearTerceto(int, int, int, lista_tercetos_t *);
@@ -82,6 +83,7 @@ int crearTerceto(char*, char*, char*);
 // void ObtenerItemLT(lista_tercetos_t *, int, terceto_t *);
 // int BuscarPosLT(lista_tercetos_t *, terceto_t *);
 void ModificarTerceto(int, int, int, lista_tercetos_t *, int);
+int insertarEnLT(lista_tercetos_t *p, struct_Terceto *d);
 // void NegarOperadorTerceto(int, lista_tercetos_t *);
 int NegarOperador(int);
 void DumpLista(lista_tercetos_t *);

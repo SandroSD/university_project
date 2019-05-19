@@ -23,9 +23,6 @@ n:=-542.43
 s:=""
 c:=1*2
 
-*/ Asignacion multiple /*
-a:=b:=i:=5
-
 */ CICLO WHILE /*
 while (a<7)
 	i:=5 + b

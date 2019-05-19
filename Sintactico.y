@@ -29,7 +29,7 @@
 	// Auxiliar para manejar tercetos;
 	int indiceFactor;
 	int indiceExpresion, indiceTermino;
-	int indiceAux, indiceUltimo;
+	int indiceAux, indiceUltimo, indiceIzq, indiceDer;
 	char auxCte[8] = "_auxCte";
 
 	//Indice terceto
@@ -226,39 +226,46 @@ condicion:
 			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");		}	;
 
 comparacion:
-	   		expresion comparador expresion	
+	   		expresion { indiceIzq = indiceExpresion; } comparador expresion 
+			{
+				indiceDer = indiceExpresion;
+				crearTerceto("CMP",armarIndiceI(indiceIzq),armarIndiceD(indiceDer));
+				char comparadorDesapilado[8];
+				sacar_de_pila(&pila, &comparadorDesapilado); 
+				crearTerceto(comparadorDesapilado,"_","_");
+			}
 			| longitud comparador expresion;
 
 comparador:
 	CMP_MAYOR 
-	{ 
-		crearTerceto("CMP","_","_"); 
-		crearTerceto("BLE","_","_");
+	{
+		char comparadorApilado[8] = "BLE";
+		poner_en_pila(&pila,&comparadorApilado);
 	} 
 	| CMP_MENOR 
 	{
-		crearTerceto("CMP","_","_"); 
-		crearTerceto("BGE","_","_");
+		char comparadorApilado[8] = "BGE";
+		poner_en_pila(&pila,&comparadorApilado);
 	}
 	| CMP_MAYORIGUAL 
 	{
-		crearTerceto("CMP","_","_");
-		crearTerceto("BLT","_","_");
+		char comparadorApilado[8] = "BLT";
+		poner_en_pila(&pila,&comparadorApilado);
 	} 
 	| CMP_MENORIGUAL 
 	{
-		crearTerceto("CMP","_","_");
-		crearTerceto("BGT","_","_");
+		char comparadorApilado[8] = "BGT";
+		poner_en_pila(&pila,&comparadorApilado);
 	} 
 	| CMP_IGUAL 
 	{
-		crearTerceto("CMP","_","_"); 
-		crearTerceto("BNE","_","_");
+		char comparadorApilado[8] = "BNE";
+		poner_en_pila(&pila,&comparadorApilado);
 	} 
 	| CMP_DISTINTO	
 	{
-		crearTerceto("CMP","_","_"); 
-		crearTerceto("BEQ","_","_");
+		char comparadorApilado[8] = "BEQ";
+		poner_en_pila(&pila,&comparadorApilado);
 	} ;
 
 expresion:

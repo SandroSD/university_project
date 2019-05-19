@@ -1,0 +1,27 @@
+DEFVAR	
+ n : FLOAT
+ a,b,i : INTEGER
+ cadena, s : STRING
+ENDDEF
+
+*/ Comentario
+de mas de una
+linea /*
+
+*/ Comentario */ Anidado /* /*
+
+a:=b
+
+i:=1	
+a:=15
+n:= 99.99
+n:= .99
+n:= 99.
+n:=-542.43
+s:=""
+c:=1*2
+
+*/ CICLO WHILE /*
+while (a<7)
+	i:=5 + b
+endwhile

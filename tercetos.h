@@ -76,12 +76,13 @@ struct struct_Terceto
 struct struct_Terceto tercetos[10000];
 
 int crearTerceto(char*, char*, char*);
+int modificarTerceto(int, int, char*);
 // int CrearTerceto(int, int, int, lista_tercetos_t *);
 // int InsertarEnLT(lista_tercetos_t *, terceto_t *);
 // void VaciarLT(lista_tercetos_t *);
 // void ObtenerItemLT(lista_tercetos_t *, int, terceto_t *);
 // int BuscarPosLT(lista_tercetos_t *, terceto_t *);
-void ModificarTerceto(int, int, int, lista_tercetos_t *, int);
+// void ModificarTerceto(int, int, int, lista_tercetos_t *, int);
 // void NegarOperadorTerceto(int, lista_tercetos_t *);
 int NegarOperador(int);
 void DumpLista(lista_tercetos_t *);

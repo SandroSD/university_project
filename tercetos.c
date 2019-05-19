@@ -23,6 +23,25 @@ int crearTerceto(char *operador, char *operando1, char *operando2)
     return indiceTercetoCreado;
 }
 
+int modificarTerceto(int indice, int posDentroTerceto, char *valor)
+{
+    switch (posDentroTerceto)
+    {
+    case 1:
+        strcpy(tercetos[indice].operador, valor);
+        break;
+    case 2:
+        strcpy(tercetos[indice].operandoIzq, valor);
+        break;
+    case 3:
+        strcpy(tercetos[indice].operandoDer, valor);
+        break;
+    default:
+        return ERROR;
+    }
+    return TODO_OK;
+}
+
 int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
 {
     //Esto inserta al terceto en la lista y devuelve su posicion.
@@ -131,45 +150,45 @@ void ObtenerItemLT(lista_tercetos_t *p, int pos, terceto_t *nodo)
     nodo = NULL;
 }
 
-void ModificarTerceto(int op, int li, int ld, lista_tercetos_t *p, int pos)
-{
-    t_node *act = *p;
-    int cont = 0;
+// void ModificarTerceto(int op, int li, int ld, lista_tercetos_t *p, int pos)
+// {
+//     t_node *act = *p;
+//     int cont = 0;
 
-    if (act)
-    {
-        while (act->ant)
-            act = act->ant;
-        while (act)
-        {
-            if (cont == pos)
-            {
-                if (op != NO_MODIF && op != NEGAR)
-                {
-                    act->info.operacion = op;
-                }
-                if (op == NEGAR)
-                {
-                    act->info.operacion = NegarOperador(act->info.operacion);
-                }
-                if (li != NO_MODIF)
-                {
-                    act->info.opIzq = li;
-                }
-                if (ld != NO_MODIF)
-                {
-                    act->info.opDer = ld;
-                }
-                return;
-            }
-            else
-            {
-                cont++;
-                act = act->sig;
-            }
-        }
-    }
-}
+//     if (act)
+//     {
+//         while (act->ant)
+//             act = act->ant;
+//         while (act)
+//         {
+//             if (cont == pos)
+//             {
+//                 if (op != NO_MODIF && op != NEGAR)
+//                 {
+//                     act->info.operacion = op;
+//                 }
+//                 if (op == NEGAR)
+//                 {
+//                     act->info.operacion = NegarOperador(act->info.operacion);
+//                 }
+//                 if (li != NO_MODIF)
+//                 {
+//                     act->info.opIzq = li;
+//                 }
+//                 if (ld != NO_MODIF)
+//                 {
+//                     act->info.opDer = ld;
+//                 }
+//                 return;
+//             }
+//             else
+//             {
+//                 cont++;
+//                 act = act->sig;
+//             }
+//         }
+//     }
+// }
 
 void NegarOperadorTerceto(int pos, lista_tercetos_t *lt)
 {

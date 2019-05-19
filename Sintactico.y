@@ -26,9 +26,11 @@
 	char * arrayDeclaraciones[100];	// array para declaraciones
 	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
 
-	// Auxiliar para indices de tercetos;
-	int indiceExpresion, indiceTermino, indiceFactor;
-	int indiceAux, indiceUltimo, indiceDesapilado;
+	// Auxiliar para manejar tercetos;
+	int indiceFactor;
+	int indiceExpresion, indiceTermino;
+	int indiceAux, indiceUltimo;
+	char auxCte[8] = "_auxCte";
 
 	//Indice terceto
 	int indiceTerceto, indiceUltimo;
@@ -141,7 +143,8 @@ ciclo:
 	CAR_PA condicion CAR_PC bloque 
 	ENDWHILE	
 	{	printf("\t\tFIN DEL WHILE\n"); 
-		indiceUltimo=crearTerceto("BI","_","_"); 
+		indiceUltimo=crearTerceto("BI","_","_");
+		int indiceDesapilado;
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
 	}	;
@@ -149,18 +152,18 @@ ciclo:
 ciclo_especial:
 	WHILE		
 	{
-		// printf("\t\tWHILE (especial) \n"); 
-		// indiceTerceto=crearTerceto("ETIQ1","_","_"); 
-		// apilar(PILA_WHILE, indiceTerceto); 
+		printf("\t\tWHILE (especial) \n"); 
+		indiceAux=crearTerceto("ETIQ2","_","_"); 
+		poner_en_pila(&pila,&indiceAux);
 	} 
 	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
 	ENDWHILE	
 	{ 
-		// printf("\t\tFIN DEL WHILE\n"); 
-		// indiceUltimo=crearTerceto("BI","_","_"); 
-		// indiceTerceto=desapilar(PILA_WHILE); 
-		// indiceTerceto=desapilar(PILA_WHILE); 
-		// modificarTerceto(indiceTerceto, 2, indiceUltimo);
+		printf("\t\tFIN DEL WHILE\n"); 
+		indiceUltimo=crearTerceto("BI","_","_"); 
+		int indiceDesapilado;
+		sacar_de_pila(&pila, &indiceDesapilado); 
+		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
 	}	;
 
 longitud: 
@@ -179,12 +182,26 @@ lista_expresiones:
 			| lista_expresiones CAR_COMA expresion ;
 
 asignacion:
-			lista_id OP_ASIG expresion 	{	printf("\t\tFIN LINEA ASIGNACION\n");	}
-			| lista_id OP_ASIG longitud 	{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");	}	;
+			lista_id OP_ASIG expresion 	
+			{	printf("\t\tFIN LINEA ASIGNACION\n");
+				int indiceDesapilado;
+				sacar_de_pila(&pila, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceExpresion));
+			}
+			| lista_id OP_ASIG longitud 	
+			{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");	}	;
 
 lista_id:
 	lista_id OP_ASIG ID
-	| ID ;
+	{ 
+		crearTerceto("=",yylval.str_val,"_auxCte");
+	}
+	| ID 
+	{ 
+		indiceAux = crearTerceto("=","_auxCte","_");
+		poner_en_pila(&pila,&indiceAux);
+		crearTerceto("=",yylval.str_val,"_auxCte");
+	};
 	  
 entrada_salida:
 	GET	ID				{	crearTerceto("GET",yylval.str_val,"_");	}
@@ -268,7 +285,7 @@ termino:
 
 factor:
 	ID					{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
-	| CONST_INT			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
+	| CONST_INT			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");}
 	| CONST_REAL		{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
 	| CONST_STR			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
 	| CAR_PA expresion CAR_PC;

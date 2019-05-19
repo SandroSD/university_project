@@ -18,6 +18,7 @@
 	// Cabecera funciones varias
 	void insertarEnArrayDeclaracion(char *);
 	void validarDeclaracionTipoDato(char *);
+	char * negarComparador(char*);
 
 	// Declaro la pila (estructura externa que me servira para resolver GCI)
 	t_pila pila;
@@ -27,13 +28,8 @@
 	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
 
 	// Auxiliar para manejar tercetos;
-	int indiceFactor;
-	int indiceExpresion, indiceTermino;
-	int indiceAux, indiceUltimo, indiceIzq, indiceDer;
-	char auxCte[8] = "_auxCte";
-
-	//Indice terceto
-	int indiceTerceto, indiceUltimo;
+	int indiceExpresion, indiceTermino, indiceFactor;
+	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2;
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -221,9 +217,33 @@ seleccion:
 // Seccion 4
 condicion:
 			comparacion                     {   printf("\t\tCOMPARACION\n");}
-			| OP_NOT comparacion			{	printf("\t\tCONDICION NOT\n");	}
-			|comparacion OP_AND comparacion	{	printf("\t\tCONDICION DOBLE AND\n");	}
-			|comparacion OP_OR  comparacion	{	printf("\t\tCONDICION DOBLE OR\n");		}	;
+			| OP_NOT comparacion			
+			{	printf("\t\tCONDICION NOT\n");
+				char *operador = obtenerTerceto(indiceComparador,1);
+				char *operadorNegado = negarComparador(operador);
+				modificarTerceto(indiceComparador,1,operadorNegado);
+			}
+			| comparacion { indiceComparador1 = indiceComparador } OP_AND comparacion	
+			{	printf("\t\tCONDICION DOBLE AND\n");
+				indiceComparador2 = indiceComparador;
+				// TODO: saltar afuera del bloque de la seleccion o ciclo.
+				// int indiceDesapilado;
+				// sacar_de_pila(&pila, &indiceDesapilado);
+				// modificarTerceto(indiceComparador1,2,armarIndiceI(indiceDesapilado));
+				// modificarTerceto(indiceComparador2,2,armarIndiceI(indiceDesapilado));
+			}
+			| comparacion { indiceComparador1 = indiceComparador } OP_OR  comparacion	
+			{	printf("\t\tCONDICION DOBLE OR\n");		
+				indiceComparador2 = indiceComparador;
+				// TODO: negar compa 1 y saltar al bloque verdadero.
+				// compa 2 normal y saltar afuera del bloque.
+				// int indiceDesapilado1;
+				// sacar_de_pila(&pila, &indiceDesapilado1);
+				// modificarTerceto(indiceComparador2,2,armarIndiceI(indiceDesapilado1));
+				// int indiceDesapilado2;
+				// sacar_de_pila(&pila, &indiceDesapilado2);
+				// modificarTerceto(indiceComparador1,2,armarIndiceI(indiceDesapilado2));
+			}	;
 
 comparacion:
 	   		expresion { indiceIzq = indiceExpresion; } comparador expresion 
@@ -232,7 +252,7 @@ comparacion:
 				crearTerceto("CMP",armarIndiceI(indiceIzq),armarIndiceD(indiceDer));
 				char comparadorDesapilado[8];
 				sacar_de_pila(&pila, &comparadorDesapilado); 
-				crearTerceto(comparadorDesapilado,"_","_");
+				indiceComparador = crearTerceto(comparadorDesapilado,"_","_");
 			}
 			| longitud comparador expresion;
 
@@ -350,4 +370,21 @@ void validarDeclaracionTipoDato(char * tipo)
 	}
 	// Reinicio el contador para leer otro tipo de dato
 	posicion_en_arrayDeclaraciones = 0;
+}
+
+char * negarComparador(char* comparador)
+{
+	if(strcmp(comparador,"BLE") == 0)
+		return "BGT";
+	if(strcmp(comparador,"BGE") == 0)
+		return "BLT";
+	if(strcmp(comparador,"BLT") == 0)
+		return "BGE";
+	if(strcmp(comparador,"BGT") == 0)
+		return "BLE";
+	if(strcmp(comparador,"BNE") == 0)
+		return "BEQ";
+	if(strcmp(comparador,"BEQ") == 0)
+		return "BNE";
+	return NULL;
 }

@@ -5,6 +5,6 @@ b                             INTEGER
 i                             INTEGER     
 cadena                        STRING      
 s                             STRING      
-_15                           CONST_INT   15                            2           
-_4                            CONST_INT   4                             1           
+_1                            CONST_INT   1                             1           
+_2                            CONST_INT   2                             1           
 _16                           CONST_INT   16                            2           

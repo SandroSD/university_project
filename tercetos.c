@@ -42,6 +42,20 @@ int modificarTerceto(int indice, int posDentroTerceto, char *valor)
     return TODO_OK;
 }
 
+char* obtenerTerceto(int indice, int posDentroTerceto)
+{
+    switch (posDentroTerceto)
+    {
+    case 1:
+        return tercetos[indice].operador;
+    case 2:
+        return tercetos[indice].operandoIzq;
+    case 3:
+        return tercetos[indice].operandoDer;
+    }
+    return NULL;
+}
+
 char * armarIndiceI(int intIndice)
 {
 	static char strIndice[8];

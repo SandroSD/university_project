@@ -79,8 +79,9 @@ struct struct_Terceto tercetos[10000];
 
 int crearTerceto(char *, char *, char *);
 int modificarTerceto(int, int, char *);
-char * armarIndiceI(int);
-char * armarIndiceD(int);
+char *obtenerTerceto(int, int);
+char *armarIndiceI(int);
+char *armarIndiceD(int);
 // int CrearTerceto(int, int, int, lista_tercetos_t *);
 // int InsertarEnLT(lista_tercetos_t *, terceto_t *);
 // void VaciarLT(lista_tercetos_t *);

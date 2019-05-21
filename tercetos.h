@@ -82,6 +82,7 @@ int modificarTerceto(int, int, char *);
 char *obtenerTerceto(int, int);
 char *armarIndiceI(int);
 char *armarIndiceD(int);
+int obtenerIndiceActual();
 // int CrearTerceto(int, int, int, lista_tercetos_t *);
 // int InsertarEnLT(lista_tercetos_t *, terceto_t *);
 // void VaciarLT(lista_tercetos_t *);

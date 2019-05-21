@@ -19,9 +19,15 @@
 	void insertarEnArrayDeclaracion(char *);
 	void validarDeclaracionTipoDato(char *);
 	char * negarComparador(char*);
+	char * obtenerNuevoNombreEtiqueta();
 
 	// Declaro la pila (estructura externa que me servira para resolver GCI)
 	t_pila pila;
+	t_pila pila_condicion_doble;
+	char condicion[5]; // puede ser AND u OR
+
+	// Contador para el incremento de etiquetas en los ciclos, solo se usa en obtenerNuevoNombreEtiqueta()
+	int incremento_etiqueta = 1;
 
 	// Arrays
 	char * arrayDeclaraciones[100];	// array para declaraciones
@@ -30,6 +36,7 @@
 	// Auxiliar para manejar tercetos;
 	int indiceExpresion, indiceTermino, indiceFactor;
 	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2;
+	int indicePrincipioBloque;
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -89,7 +96,6 @@
 // Reglas gramaticales
 %%
 
-// Seccion 1
 programa:   
 	{	printf("\tInicia el COMPILADOR\n\n");	} 
 	est_declaracion bloque 
@@ -129,18 +135,41 @@ sentencia:
 	| asignacion
 	| entrada_salida	;
 
-// Seccion 2
 ciclo:
 	WHILE		
 	{	printf("\t\tWHILE\n"); 
-		indiceAux=crearTerceto("ETIQ1","_","_"); 
+		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta(),"_","_"); 
 		poner_en_pila(&pila,&indiceAux);
 	}
-	CAR_PA condicion CAR_PC bloque 
+	CAR_PA condicion CAR_PC { indicePrincipioBloque = obtenerIndiceActual()+1; }
+	bloque 
 	ENDWHILE	
 	{	printf("\t\tFIN DEL WHILE\n"); 
-		indiceUltimo=crearTerceto("BI","_","_");
 		int indiceDesapilado;
+		int indiceActual = obtenerIndiceActual();
+		// if(pila_vacia(&pila_condicion_doble) == PILA_VACIA)
+		// {
+			sacar_de_pila(&pila, &indiceDesapilado); 
+			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		// }
+		// else
+		// {
+		// 	if(strcmp(condicion,"AND") == 0)
+		// 	{
+		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		// 	}
+		// 	if(strcmp(condicion,"OR") == 0)
+		// 	{
+		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indicePrincipioBloque));
+		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		// 	}
+		// }
+		indiceUltimo=crearTerceto("BI","_","_"); 
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
 	}	;
@@ -149,15 +178,17 @@ ciclo_especial:
 	WHILE		
 	{
 		printf("\t\tWHILE (especial) \n"); 
-		indiceAux=crearTerceto("ETIQ2","_","_"); 
+		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta(),"_","_"); 
 		poner_en_pila(&pila,&indiceAux);
 	} 
 	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
 	ENDWHILE	
 	{ 
-		printf("\t\tFIN DEL WHILE\n"); 
-		indiceUltimo=crearTerceto("BI","_","_"); 
+		printf("\t\tFIN DEL WHILE ESPECIAL\n");
 		int indiceDesapilado;
+		sacar_de_pila(&pila, &indiceDesapilado); 
+		modificarTerceto(indiceDesapilado, 2, armarIndiceI(obtenerIndiceActual()+1));
+		indiceUltimo=crearTerceto("BI","_","_"); 
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
 	}	;
@@ -172,7 +203,6 @@ lista_variables_constantes:
 			| ID
 			| CONST_INT;
 
-// Seccion 3
 lista_expresiones: 
 			expresion 
 			| lista_expresiones CAR_COMA expresion ;
@@ -214,9 +244,8 @@ seleccion:
 	bloque
 	ENDIF 	{	printf("\t\t IF CON ELSE\n");	}	;
 
-// Seccion 4
 condicion:
-			comparacion                     {   printf("\t\tCOMPARACION\n");}
+			comparacion {   printf("\t\tCOMPARACION\n");}
 			| OP_NOT comparacion			
 			{	printf("\t\tCONDICION NOT\n");
 				char *operador = obtenerTerceto(indiceComparador,1);
@@ -226,23 +255,22 @@ condicion:
 			| comparacion { indiceComparador1 = indiceComparador; } OP_AND comparacion	
 			{	printf("\t\tCONDICION DOBLE AND\n");
 				indiceComparador2 = indiceComparador;
-				// TODO: saltar afuera del bloque de la seleccion o ciclo.
-				// int indiceDesapilado;
-				// sacar_de_pila(&pila, &indiceDesapilado);
-				// modificarTerceto(indiceComparador1,2,armarIndiceI(indiceDesapilado));
-				// modificarTerceto(indiceComparador2,2,armarIndiceI(indiceDesapilado));
+				strcpy(condicion, "AND");
+				poner_en_pila(&pila_condicion_doble,&indiceComparador1);
+				poner_en_pila(&pila_condicion_doble,&indiceComparador2);
 			}
-			| comparacion { indiceComparador1 = indiceComparador; } OP_OR  comparacion	
+			| comparacion 
+			{ 	indiceComparador1 = indiceComparador; 
+				char *operador = obtenerTerceto(indiceComparador1,1);
+				char *operadorNegado = negarComparador(operador);
+				modificarTerceto(indiceComparador1,1,operadorNegado);
+			} 
+			OP_OR  comparacion	
 			{	printf("\t\tCONDICION DOBLE OR\n");		
 				indiceComparador2 = indiceComparador;
-				// TODO: negar compa 1 y saltar al bloque verdadero.
-				// compa 2 normal y saltar afuera del bloque.
-				// int indiceDesapilado1;
-				// sacar_de_pila(&pila, &indiceDesapilado1);
-				// modificarTerceto(indiceComparador2,2,armarIndiceI(indiceDesapilado1));
-				// int indiceDesapilado2;
-				// sacar_de_pila(&pila, &indiceDesapilado2);
-				// modificarTerceto(indiceComparador1,2,armarIndiceI(indiceDesapilado2));
+				strcpy(condicion, "OR");
+				poner_en_pila(&pila_condicion_doble,&indiceComparador1);
+				poner_en_pila(&pila_condicion_doble,&indiceComparador2);
 			}	;
 
 comparacion:
@@ -253,6 +281,7 @@ comparacion:
 				char comparadorDesapilado[8];
 				sacar_de_pila(&pila, &comparadorDesapilado); 
 				indiceComparador = crearTerceto(comparadorDesapilado,"_","_");
+				poner_en_pila(&pila,&indiceComparador);
 			}
 			| longitud comparador expresion;
 
@@ -387,4 +416,12 @@ char * negarComparador(char* comparador)
 	if(strcmp(comparador,"BEQ") == 0)
 		return "BNE";
 	return NULL;
+}
+
+char * obtenerNuevoNombreEtiqueta()
+{
+	static char nombreEtiqueta[30];
+	sprintf(nombreEtiqueta, "ETIQ%d", incremento_etiqueta);
+	incremento_etiqueta++;
+	return nombreEtiqueta;
 }

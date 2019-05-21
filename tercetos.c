@@ -70,6 +70,11 @@ char * armarIndiceD(int intIndice)
 	return strIndice;
 }
 
+int obtenerIndiceActual()
+{
+    return tamTercetos;
+}
+
 // int InsertarEnLT(lista_tercetos_t *p, terceto_t *d)
 // {
 //     //Esto inserta al terceto en la lista y devuelve su posicion.

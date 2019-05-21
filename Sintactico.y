@@ -34,9 +34,10 @@
 	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
 
 	// Auxiliar para manejar tercetos;
-	int indiceExpresion, indiceTermino, indiceFactor;
+	int indiceExpresion, indiceTermino, indiceFactor, indiceLongitud;
 	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2;
 	int indicePrincipioBloque;
+
 %}
 
 // Especifica el valor semantico que tendra la variable global propia de bison yylval.
@@ -199,9 +200,17 @@ longitud:
 
 lista_variables_constantes:
 			lista_variables_constantes CAR_COMA ID
-			| lista_variables_constantes CAR_COMA CONST_INT
-			| ID
-			| CONST_INT;
+			{ 
+				indiceAux = crearTerceto("+","_auxLong","1");
+				indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
+			}
+			| lista_variables_constantes CAR_COMA CONST_INT	
+			{ 
+				indiceAux = crearTerceto("+","_auxLong","1");
+				indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
+			}
+			| ID		{ crearTerceto("=","_auxLong","1"); }
+			| CONST_INT { crearTerceto("=","_auxLong","1"); };
 
 lista_expresiones: 
 			expresion 
@@ -215,7 +224,11 @@ asignacion:
 				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceExpresion));
 			}
 			| lista_id OP_ASIG longitud 	
-			{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");	}	;
+			{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");
+				int indiceDesapilado;
+				sacar_de_pila(&pila, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceLongitud));
+			}	;
 
 lista_id:
 	lista_id OP_ASIG ID

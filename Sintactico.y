@@ -144,7 +144,7 @@ ciclo:
 		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta(),"_","_"); 
 		poner_en_pila(&pila,&indiceAux);
 	}
-	CAR_PA condicion CAR_PC { indicePrincipioBloque = obtenerIndiceActual()+1; }
+	CAR_PA condicion CAR_PC { indicePrincipioBloque = obtenerIndiceActual(); }
 	bloque 
 	ENDWHILE	
 	{	printf("\t\tFIN DEL WHILE\n"); 
@@ -172,9 +172,8 @@ ciclo:
 		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
 		// 	}
 		// }
-		indiceUltimo=crearTerceto("BI","_","_"); 
 		sacar_de_pila(&pila, &indiceDesapilado); 
-		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
+		crearTerceto("BI",armarIndiceI(indiceDesapilado),"_"); 
 	}	;
 
 ciclo_especial:
@@ -186,7 +185,13 @@ ciclo_especial:
 	} 
 	ID { indiceId = crearTerceto(yylval.str_val,"_","_"); } IN 
 	CAR_CA lista_expresiones CAR_CC 
-	DO 
+	{
+		int indiceDesapilado;
+		sacar_de_pila(&pila_ciclo_especial, &indiceDesapilado);
+		modificarTerceto(indiceDesapilado, 1, "BNE");
+		poner_en_pila(&pila,&indiceDesapilado);
+	}
+	DO { indicePrincipioBloque = obtenerIndiceActual(); }
 	bloque 
 	ENDWHILE	
 	{ 
@@ -196,24 +201,25 @@ ciclo_especial:
 		while(pila_vacia(&pila_ciclo_especial) != PILA_VACIA)
 		{
 			sacar_de_pila(&pila_ciclo_especial, &indiceDesapilado); 
-			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indicePrincipioBloque));
 		}
-		indiceUltimo=crearTerceto("BI","_","_"); 
 		sacar_de_pila(&pila, &indiceDesapilado); 
-		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
+		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		sacar_de_pila(&pila, &indiceDesapilado); 
+		crearTerceto("BI",armarIndiceI(indiceDesapilado),"_");
 	}	;
 
 lista_expresiones: 
 			expresion 
 			{	
 				crearTerceto("CMP",armarIndiceI(indiceId),armarIndiceD(indiceExpresion));
-				indiceComparador = crearTerceto("BNE","_","_");
+				indiceComparador = crearTerceto("BEQ","_","_");
 				poner_en_pila(&pila_ciclo_especial,&indiceComparador);
 			}
 			| lista_expresiones CAR_COMA expresion 
 			{	
 				crearTerceto("CMP",armarIndiceI(indiceId),armarIndiceD(indiceExpresion));
-				indiceComparador = crearTerceto("BNE","_","_");
+				indiceComparador = crearTerceto("BEQ","_","_");
 				poner_en_pila(&pila_ciclo_especial,&indiceComparador);
 			};
 

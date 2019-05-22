@@ -194,6 +194,10 @@ ciclo_especial:
 		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
 	}	;
 
+lista_expresiones: 
+			expresion 
+			| lista_expresiones CAR_COMA expresion ;
+
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	
 			{ printf("\t\tLONGITUD (especial) \n");	} ;
@@ -211,10 +215,6 @@ lista_variables_constantes:
 			}
 			| ID		{ crearTerceto("=","_auxLong","1"); }
 			| CONST_INT { crearTerceto("=","_auxLong","1"); };
-
-lista_expresiones: 
-			expresion 
-			| lista_expresiones CAR_COMA expresion ;
 
 asignacion:
 			lista_id OP_ASIG expresion 	

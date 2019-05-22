@@ -24,6 +24,7 @@
 	// Declaro la pila (estructura externa que me servira para resolver GCI)
 	t_pila pila;
 	t_pila pila_condicion_doble;
+	t_pila pila_ciclo_especial;
 	char condicion[5]; // puede ser AND u OR
 
 	// Contador para el incremento de etiquetas en los ciclos, solo se usa en obtenerNuevoNombreEtiqueta()
@@ -35,7 +36,8 @@
 
 	// Auxiliar para manejar tercetos;
 	int indiceExpresion, indiceTermino, indiceFactor, indiceLongitud;
-	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2;
+	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2,
+	indiceId;
 	int indicePrincipioBloque;
 
 %}
@@ -182,13 +184,20 @@ ciclo_especial:
 		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta(),"_","_"); 
 		poner_en_pila(&pila,&indiceAux);
 	} 
-	ID IN CAR_CA lista_expresiones CAR_CC DO bloque 
+	ID { indiceId = crearTerceto(yylval.str_val,"_","_"); } IN 
+	CAR_CA lista_expresiones CAR_CC 
+	DO 
+	bloque 
 	ENDWHILE	
 	{ 
 		printf("\t\tFIN DEL WHILE ESPECIAL\n");
 		int indiceDesapilado;
-		sacar_de_pila(&pila, &indiceDesapilado); 
-		modificarTerceto(indiceDesapilado, 2, armarIndiceI(obtenerIndiceActual()+1));
+		int indiceActual = obtenerIndiceActual();
+		while(pila_vacia(&pila_ciclo_especial) != PILA_VACIA)
+		{
+			sacar_de_pila(&pila_ciclo_especial, &indiceDesapilado); 
+			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		}
 		indiceUltimo=crearTerceto("BI","_","_"); 
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		modificarTerceto(indiceUltimo, 2, armarIndiceI(indiceDesapilado));
@@ -196,7 +205,17 @@ ciclo_especial:
 
 lista_expresiones: 
 			expresion 
-			| lista_expresiones CAR_COMA expresion ;
+			{	
+				crearTerceto("CMP",armarIndiceI(indiceId),armarIndiceD(indiceExpresion));
+				indiceComparador = crearTerceto("BNE","_","_");
+				poner_en_pila(&pila_ciclo_especial,&indiceComparador);
+			}
+			| lista_expresiones CAR_COMA expresion 
+			{	
+				crearTerceto("CMP",armarIndiceI(indiceId),armarIndiceD(indiceExpresion));
+				indiceComparador = crearTerceto("BNE","_","_");
+				poner_en_pila(&pila_ciclo_especial,&indiceComparador);
+			};
 
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	

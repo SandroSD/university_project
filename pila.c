@@ -6,7 +6,10 @@ void crear_pila(t_pila *pp)
 
 int pila_vacia(const t_pila *pp)
 {
-    return !(*pp);
+    if (!*pp)
+        return PILA_VACIA;
+    else
+        return PILA_LLENA;
 }
 
 int pila_llena(const t_pila *pp)

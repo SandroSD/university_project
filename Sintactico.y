@@ -167,10 +167,12 @@ ciclo:
 			if(strcmp(condicion,"OR") == 0)
 			{
 				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
-				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indicePrincipioBloque));
-				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
 				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indicePrincipioBloque));
 			}
+			// Debo desapilar el ultimo porque no me sirve
+			sacar_de_pila(&pila, &indiceDesapilado); 
 		}
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		crearTerceto("BI",armarIndiceI(indiceDesapilado),"_"); 

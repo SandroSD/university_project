@@ -1,4 +1,5 @@
-#include "pila.h"
+#include "../h_files/pila.h"
+
 void crear_pila(t_pila *pp)
 {
     *pp = NULL;

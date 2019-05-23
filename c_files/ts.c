@@ -1,6 +1,5 @@
-#include "ts.h"
+#include "../h_files/ts.h"
 
-int puntero_ts = 0;
 int posicion_en_ts = 0; // Incremento Longitud en la estructura tabla de simbolos
 
 void insertarTokenEnTS(char *tipo, char *nombre)

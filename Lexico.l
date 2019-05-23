@@ -2,8 +2,8 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "y.tab.h"
-    #include "constantes.h"
-    #include "ts.h"
+    #include "h_files/constantes.h"
+    #include "h_files/ts.h"
 
     // Funciones que no es necesario incluirlas (Ya que se importa desde y.tab.h). 
     // Se declaran unicamente para evitar warning [-Wimplicit-function-declaration] al complilar.

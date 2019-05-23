@@ -3,10 +3,10 @@
     #include <stdlib.h>
     #include <string.h>
     #include "y.tab.h"
-	#include "constantes.h"
-	#include "tercetos.h"
-	#include "ts.h"
-	#include "pila.h"
+	#include "h_files/constantes.h"
+	#include "h_files/tercetos.h"
+	#include "h_files/ts.h"
+	#include "h_files/pila.h"
 
 	// Declaraciones mandatory para quitar warnings
     int yylineno;

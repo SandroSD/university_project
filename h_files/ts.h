@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include "constantes.h"
 
-// TABLA DE SIMBOLOS
+// Tabla de simbolos
 struct struct_tablaSimbolos
 {
     char nombre[100];

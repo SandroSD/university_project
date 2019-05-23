@@ -287,8 +287,23 @@ seleccion:
 	| IF CAR_PA condicion CAR_PC THEN 
 	bloque 
 	ELSE 
+	{
+		int indiceDesapilado;
+		int indiceActual = obtenerIndiceActual();
+		sacar_de_pila(&pila, &indiceDesapilado); 
+		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		indiceAux = crearTerceto("BI","_","_");
+		poner_en_pila(&pila, &indiceAux);
+	}
 	bloque
-	ENDIF 	{	printf("\t\tENDIF (con else)\n");	}	;
+	ENDIF 	
+	{	
+		printf("\t\tENDIF (con else)\n");
+		int indiceDesapilado;
+		int indiceActual = obtenerIndiceActual();
+		sacar_de_pila(&pila, &indiceDesapilado); 
+		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));	
+	}	; 
 
 condicion:
 			comparacion {   printf("\t\tCOMPARACION\n");}

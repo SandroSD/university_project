@@ -22,6 +22,7 @@ _4                            CONST_INT   4                             1
 _16                           CONST_INT   16                            2           
 _30                           CONST_INT   30                            2           
 _60                           CONST_INT   60                            2           
+_32                           CONST_INT   32                            2           
 _8                            CONST_INT   8                             1           
 _"ewr"                        CONST_STR   "ewr"                         5           
 _"@%asdr"                     CONST_STR   "@%asdr"                      8           

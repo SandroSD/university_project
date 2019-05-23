@@ -275,14 +275,34 @@ entrada_salida:
 	| DISPLAY CONST_STR	{	crearTerceto("DISPLAY",yylval.str_val,"_");	};
 
 seleccion:
-	IF CAR_PA condicion CAR_PC THEN 
+	IF CAR_PA condicion CAR_PC THEN
 	bloque 
 	ENDIF	
 	{	printf("\t\tENDIF\n");	
 		int indiceDesapilado;
 		int indiceActual = obtenerIndiceActual();
-		sacar_de_pila(&pila, &indiceDesapilado); 
-		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
+		if(pila_vacia(&pila_condicion_doble) == PILA_VACIA)
+		{
+			sacar_de_pila(&pila, &indiceDesapilado); 
+			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
+		}
+		else
+		{
+			if(strcmp(condicion,"AND") == 0)
+			{
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
+			}
+			if(strcmp(condicion,"OR") == 0)
+			{
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceComparador));
+			}
+		}
 	}
 	| IF CAR_PA condicion CAR_PC THEN 
 	bloque 
@@ -290,8 +310,28 @@ seleccion:
 	{
 		int indiceDesapilado;
 		int indiceActual = obtenerIndiceActual();
-		sacar_de_pila(&pila, &indiceDesapilado); 
-		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		if(pila_vacia(&pila_condicion_doble) == PILA_VACIA)
+		{
+			sacar_de_pila(&pila, &indiceDesapilado); 
+			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+		}
+		else
+		{
+			if(strcmp(condicion,"AND") == 0)
+			{
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+			}
+			if(strcmp(condicion,"OR") == 0)
+			{
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceComparador+1));
+			}
+		}
 		indiceAux = crearTerceto("BI","_","_");
 		poner_en_pila(&pila, &indiceAux);
 	}
@@ -302,7 +342,7 @@ seleccion:
 		int indiceDesapilado;
 		int indiceActual = obtenerIndiceActual();
 		sacar_de_pila(&pila, &indiceDesapilado); 
-		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));	
+		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
 	}	; 
 
 condicion:

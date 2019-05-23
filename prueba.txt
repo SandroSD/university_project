@@ -82,12 +82,31 @@ if (long([30,60])==2) THEN
 	i:=16
 ENDIF
 
-*/ ASIGNACION MULTIPLE /*
+*/ IF CON ELSE (condicion simple) /*
+if (a==2) THEN
+	i:=16
+ELSE
+	i:=32
+ENDIF
 
+*/ IF CON ELSE (condicion doble AND) /*
+if (a>2 AND b==1) THEN
+	i:=16
+ELSE
+	i:=32
+ENDIF
+
+*/ IF CON ELSE (condicion doble OR) /*
+if (a>2 or b==1) THEN
+	i:=16
+ELSE
+	i:=32
+ENDIF
+
+*/ ASIGNACION MULTIPLE /*
 a:=b:=c:=8
 
 */ DISPLAY Y GET /*
-
 GET n
 DISPLAY b
 DISPLAY "ewr"

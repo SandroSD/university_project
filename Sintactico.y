@@ -1,18 +1,18 @@
 %{
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
-    #include "y.tab.h"
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include "y.tab.h"
 	#include "h_files/constantes.h"
 	#include "h_files/tercetos.h"
 	#include "h_files/ts.h"
 	#include "h_files/pila.h"
 
 	// Declaraciones mandatory para quitar warnings
-    int yylineno;
-    FILE  *yyin;
-    int yylex();
-    int yyerror(char *msg);
+	int yylineno;
+	FILE  *yyin;
+	int yylex();    
+	int yyerror(char *msg);
 	int yyparse();
 
 	// Cabecera funciones varias
@@ -462,16 +462,16 @@ int main(int argc, char *argv[])
 {
     if ((yyin = fopen(argv[1], "rt")) == NULL)
     {
-	    printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
+	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
     }
     else
     {
-		crear_pila(&pila);
-	    yyparse();
+	crear_pila(&pila);
+	yyparse();
     }
     fclose(yyin);
     crearArchivoTS();
-	crearArchivoTercetosIntermedia();
+    crearArchivoTercetosIntermedia();
     return 0;
 }
 
@@ -484,10 +484,10 @@ int yyerror(char *msg)
 
 void insertarEnArrayDeclaracion(char * val)
 {
-	char * aux = (char *) malloc(sizeof(char) * (strlen(val) + 1));
+    char * aux = (char *) malloc(sizeof(char) * (strlen(val) + 1));
     strcpy(aux, val);
-	arrayDeclaraciones[posicion_en_arrayDeclaraciones] = aux;
-	posicion_en_arrayDeclaraciones++;
+    arrayDeclaraciones[posicion_en_arrayDeclaraciones] = aux;
+    posicion_en_arrayDeclaraciones++;
 }
 	
 void validarDeclaracionTipoDato(char * tipo)

@@ -150,28 +150,28 @@ ciclo:
 	{	printf("\t\tFIN DEL WHILE\n"); 
 		int indiceDesapilado;
 		int indiceActual = obtenerIndiceActual();
-		// if(pila_vacia(&pila_condicion_doble) == PILA_VACIA)
-		// {
+		if(pila_vacia(&pila_condicion_doble) == PILA_VACIA)
+		{
 			sacar_de_pila(&pila, &indiceDesapilado); 
 			modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
-		// }
-		// else
-		// {
-		// 	if(strcmp(condicion,"AND") == 0)
-		// 	{
-		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
-		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
-		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
-		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
-		// 	}
-		// 	if(strcmp(condicion,"OR") == 0)
-		// 	{
-		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
-		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indicePrincipioBloque));
-		// 		sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
-		// 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
-		// 	}
-		// }
+		}
+		else
+		{
+			if(strcmp(condicion,"AND") == 0)
+			{
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+			}
+			if(strcmp(condicion,"OR") == 0)
+			{
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indicePrincipioBloque));
+				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual+1));
+			}
+		}
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		crearTerceto("BI",armarIndiceI(indiceDesapilado),"_"); 
 	}	;
@@ -327,7 +327,15 @@ comparacion:
 				indiceComparador = crearTerceto(comparadorDesapilado,"_","_");
 				poner_en_pila(&pila,&indiceComparador);
 			}
-			| longitud comparador expresion;
+			| longitud { indiceIzq = indiceLongitud; } comparador expresion
+			{
+				indiceDer = indiceExpresion;
+				crearTerceto("CMP",armarIndiceI(indiceIzq),armarIndiceD(indiceDer));
+				char comparadorDesapilado[8];
+				sacar_de_pila(&pila, &comparadorDesapilado); 
+				indiceComparador = crearTerceto(comparadorDesapilado,"_","_");
+				poner_en_pila(&pila,&indiceComparador);
+			};
 
 comparador:
 	CMP_MAYOR 

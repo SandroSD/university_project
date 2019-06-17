@@ -20,6 +20,11 @@
 	void validarDeclaracionTipoDato(char *);
 	char * negarComparador(char*);
 	char * obtenerNuevoNombreEtiqueta();
+	void insertarEnArrayComparacionTipos(char *);
+	void insertarEnArrayComparacionTiposDirecto(char *);
+	void imprimirArrayComparacionTipos();
+	void compararTipos();
+	char * tipoConstanteConvertido(char*);
 
 	// Declaro la pila (estructura externa que me servira para resolver GCI)
 	t_pila pila;
@@ -32,7 +37,9 @@
 
 	// Arrays
 	char * arrayDeclaraciones[100];	// array para declaraciones
-	int posicion_en_arrayDeclaraciones = 0; // incremento en el array listaDeclaracion
+	int longitud_arrayDeclaraciones = 0; // incremento en el array arrayDeclaraciones
+	char * arrayComparacionTipos[100];	// array para comparar tipos
+	int longitud_arrayComparacionTipos = 0; // incremento en el array arrayComparacionTipos
 
 	// Auxiliar para manejar tercetos;
 	int indiceExpresion, indiceTermino, indiceFactor, indiceLongitud;
@@ -227,7 +234,10 @@ lista_expresiones:
 
 longitud: 
 			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	
-			{ printf("\t\tLONGITUD (especial) \n");	} ;
+			{ 
+				printf("\t\tLONGITUD (especial) \n");	
+				insertarEnArrayComparacionTiposDirecto("INTEGER");
+			} ;
 
 lista_variables_constantes:
 			lista_variables_constantes CAR_COMA ID
@@ -246,12 +256,18 @@ lista_variables_constantes:
 asignacion:
 			lista_id OP_ASIG expresion 	
 			{	printf("\t\tFIN LINEA ASIGNACION\n");
+
+				compararTipos();
+
 				int indiceDesapilado;
 				sacar_de_pila(&pila, &indiceDesapilado); 
 				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceExpresion));
 			}
 			| lista_id OP_ASIG longitud 	
 			{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");
+
+				compararTipos();
+
 				int indiceDesapilado;
 				sacar_de_pila(&pila, &indiceDesapilado); 
 				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceLongitud));
@@ -260,10 +276,15 @@ asignacion:
 lista_id:
 	lista_id OP_ASIG ID
 	{ 
+		
+		insertarEnArrayComparacionTipos(yylval.str_val);
+
 		crearTerceto("=",yylval.str_val,"_auxCte");
 	}
 	| ID 
-	{ 
+	{
+		insertarEnArrayComparacionTipos(yylval.str_val);
+
 		indiceAux = crearTerceto("=","_auxCte","_");
 		poner_en_pila(&pila,&indiceAux);
 		crearTerceto("=",yylval.str_val,"_auxCte");
@@ -377,6 +398,7 @@ condicion:
 comparacion:
 	   		expresion { indiceIzq = indiceExpresion; } comparador expresion 
 			{
+				compararTipos();
 				indiceDer = indiceExpresion;
 				crearTerceto("CMP",armarIndiceI(indiceIzq),armarIndiceD(indiceDer));
 				char comparadorDesapilado[8];
@@ -386,6 +408,7 @@ comparacion:
 			}
 			| longitud { indiceIzq = indiceLongitud; } comparador expresion
 			{
+				compararTipos();
 				indiceDer = indiceExpresion;
 				crearTerceto("CMP",armarIndiceI(indiceIzq),armarIndiceD(indiceDer));
 				char comparadorDesapilado[8];
@@ -449,10 +472,26 @@ termino:
 	}	;
 
 factor:
-	ID					{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
-	| CONST_INT			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");}
-	| CONST_REAL		{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
-	| CONST_STR			{	indiceFactor = crearTerceto(yylval.str_val,"_","_");	}
+	ID					
+	{	
+		insertarEnArrayComparacionTipos(yylval.str_val);
+		indiceFactor = crearTerceto(yylval.str_val,"_","_");	
+	}
+	| CONST_INT			
+	{	
+		insertarEnArrayComparacionTipos(yylval.str_val);
+		indiceFactor = crearTerceto(yylval.str_val,"_","_");
+	}
+	| CONST_REAL		
+	{	
+		insertarEnArrayComparacionTipos(yylval.str_val);
+		indiceFactor = crearTerceto(yylval.str_val,"_","_");
+	}
+	| CONST_STR			
+	{	
+		insertarEnArrayComparacionTipos(yylval.str_val);
+		indiceFactor = crearTerceto(yylval.str_val,"_","_");
+	}
 	| CAR_PA expresion CAR_PC;
 
 %%
@@ -462,12 +501,12 @@ int main(int argc, char *argv[])
 {
     if ((yyin = fopen(argv[1], "rt")) == NULL)
     {
-	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
+		printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
     }
     else
     {
-	crear_pila(&pila);
-	yyparse();
+		crear_pila(&pila);
+		yyparse();
     }
     fclose(yyin);
     crearArchivoTS();
@@ -478,7 +517,7 @@ int main(int argc, char *argv[])
 int yyerror(char *msg)
 {
     fflush(stderr);
-    fprintf(stderr, "\n\n--- ERROR ---\nAt line %d: \'%s\'.\n\n", yylineno, msg);
+    fprintf(stderr, "\n\n--- ERROR EN COMPILACION ---\nEn linea %d: %s.\n\n", yylineno, msg);
     exit(1);
 }
 
@@ -486,14 +525,14 @@ void insertarEnArrayDeclaracion(char * val)
 {
     char * aux = (char *) malloc(sizeof(char) * (strlen(val) + 1));
     strcpy(aux, val);
-    arrayDeclaraciones[posicion_en_arrayDeclaraciones] = aux;
-    posicion_en_arrayDeclaraciones++;
+    arrayDeclaraciones[longitud_arrayDeclaraciones] = aux;
+    longitud_arrayDeclaraciones++;
 }
 	
 void validarDeclaracionTipoDato(char * tipo)
 {
 	int i;
-	for (i=0; i < posicion_en_arrayDeclaraciones; i++)
+	for (i=0; i < longitud_arrayDeclaraciones; i++)
 	{
 		if(existeTokenEnTS(arrayDeclaraciones[i]) == NO_EXISTE)
 		{
@@ -507,7 +546,7 @@ void validarDeclaracionTipoDato(char * tipo)
 		}
 	}
 	// Reinicio el contador para leer otro tipo de dato
-	posicion_en_arrayDeclaraciones = 0;
+	longitud_arrayDeclaraciones = 0;
 }
 
 char * negarComparador(char* comparador)
@@ -533,4 +572,85 @@ char * obtenerNuevoNombreEtiqueta()
 	sprintf(nombreEtiqueta, "ETIQ%d", incremento_etiqueta);
 	incremento_etiqueta++;
 	return nombreEtiqueta;
+}
+
+void insertarEnArrayComparacionTipos(char * val)
+{
+	// Primero corroboramos existencia del token en la tabla de simbolos
+	if(existeTokenEnTS(yylval.str_val) == NO_EXISTE)
+	{
+		char msg[300];
+		sprintf(msg, "ERROR en etapa GCI - Variable \'%s\' no declarada en la seccion declaracion", yylval.str_val);
+		yyerror(msg);
+	}
+
+	// Luego insertamos el tipo de token en nuestro array
+	char * tipo = recuperarTipoTS(val);
+	tipo = tipoConstanteConvertido(tipo);
+    char * aux = (char *) malloc(sizeof(char) * (strlen(tipo) + 1));
+	strcpy(aux, tipo);
+    arrayComparacionTipos[longitud_arrayComparacionTipos] = aux;
+    longitud_arrayComparacionTipos++;
+}
+
+void insertarEnArrayComparacionTiposDirecto(char * tipo)
+{
+    char * aux = (char *) malloc(sizeof(char) * (strlen(tipo) + 1));
+	strcpy(aux, tipo);
+    arrayComparacionTipos[longitud_arrayComparacionTipos] = aux;
+    longitud_arrayComparacionTipos++;
+}
+
+void imprimirArrayComparacionTipos()
+{
+	printf("\n ARRAY DE TIPOS: ");
+	int i;
+	for (i=0; i < longitud_arrayComparacionTipos; i++)
+	{
+		printf("\n %s ", arrayComparacionTipos[i]);
+	}
+}
+
+void compararTipos()
+{
+	// imprimirArrayComparacionTipos();
+	char* tipoBase = arrayComparacionTipos[0];
+	int i;
+	for (i=1; i < longitud_arrayComparacionTipos; i++)
+	{
+		char* tipoAComparar = arrayComparacionTipos[i];
+		if(strcmp(tipoBase, tipoAComparar) != 0)
+		{
+			char msg[300];
+		    sprintf(msg, "ERROR en etapa GCI - Tipo de datos incompatibles. Tipo 1: \'%s\' Tipo 2: \'%s\'", tipoBase, tipoAComparar);
+			yyerror(msg);
+		}
+	}
+	longitud_arrayComparacionTipos = 0;
+}
+
+char * tipoConstanteConvertido(char* tipoVar)
+{
+	if(strcmp(tipoVar, "INTEGER") != 0 && strcmp(tipoVar, "REAL") != 0 && strcmp(tipoVar, "STRING") != 0)
+	{
+		if(strcmp(tipoVar, "CONST_INT") == 0)
+		{
+			return "INTEGER";
+		}
+		else
+			if(strcmp(tipoVar, "CONST_REAL") == 0)
+			{
+				return "REAL";
+			}
+			else 
+				if(strcmp(tipoVar, "CONST_STR") == 0)
+				{
+					return "STRING";
+				}
+				else
+				{
+					return NULL;
+				}
+	}
+	return tipoVar;
 }

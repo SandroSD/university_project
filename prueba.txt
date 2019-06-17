@@ -2,7 +2,7 @@
 
 DEFVAR	
  n : FLOAT
- a,b,i : INTEGER
+ a,b,i,c : INTEGER
  cadena, s : STRING
 ENDDEF
 

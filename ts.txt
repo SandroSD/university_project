@@ -3,6 +3,7 @@ n                             REAL
 a                             INTEGER     
 b                             INTEGER     
 i                             INTEGER     
+c                             INTEGER     
 cadena                        STRING      
 s                             STRING      
 _1                            CONST_INT   1                             1           

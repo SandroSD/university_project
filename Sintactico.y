@@ -25,6 +25,9 @@
 	void imprimirArrayComparacionTipos();
 	void compararTipos();
 	char * tipoConstanteConvertido(char*);
+	void insertarEnArrayTercetos(char *operador, char *operando1, char *operando2);
+	void imprimirArrayTercetos();
+	void crearTercetosDelArray();
 
 	// Declaro la pila (estructura externa que me servira para resolver GCI)
 	t_pila pila;
@@ -41,11 +44,18 @@
 	char * arrayComparacionTipos[100];	// array para comparar tipos
 	int longitud_arrayComparacionTipos = 0; // incremento en el array arrayComparacionTipos
 
+	// Cola estatica para guardar aquellos tercetos que se escriben antes.
+	struct struct_Terceto arrayTercetos[1000];
+	int longitud_arrayTercetos = 0;
+
 	// Auxiliar para manejar tercetos;
 	int indiceExpresion, indiceTermino, indiceFactor, indiceLongitud;
 	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2,
 	indiceId;
 	int indicePrincipioBloque;
+
+	// Test
+	struct struct_Terceto tercetoAEncolar;
 
 %}
 
@@ -250,8 +260,8 @@ lista_variables_constantes:
 				indiceAux = crearTerceto("+","_auxLong","1");
 				indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
 			}
-			| ID		{ crearTerceto("=","_auxLong","1"); }
-			| CONST_INT { crearTerceto("=","_auxLong","1"); };
+			| ID		{ indiceLongitud = crearTerceto("=","_auxLong","1"); }
+			| CONST_INT { indiceLongitud = crearTerceto("=","_auxLong","1"); };
 
 asignacion:
 			lista_id OP_ASIG expresion 	
@@ -259,35 +269,31 @@ asignacion:
 
 				compararTipos();
 
-				int indiceDesapilado;
-				sacar_de_pila(&pila, &indiceDesapilado); 
-				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceExpresion));
+				crearTerceto("=","_auxCte",armarIndiceD(indiceExpresion));
+				
+				crearTercetosDelArray();
 			}
 			| lista_id OP_ASIG longitud 	
 			{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");
 
 				compararTipos();
 
-				int indiceDesapilado;
-				sacar_de_pila(&pila, &indiceDesapilado); 
-				modificarTerceto(indiceDesapilado, 3, armarIndiceD(indiceLongitud));
+				crearTerceto("=","_auxCte",armarIndiceD(indiceLongitud));
+
+				crearTercetosDelArray();
 			}	;
 
 lista_id:
 	lista_id OP_ASIG ID
 	{ 
-		
 		insertarEnArrayComparacionTipos(yylval.str_val);
-
-		crearTerceto("=",yylval.str_val,"_auxCte");
+		insertarEnArrayTercetos("=",yylval.str_val,"_auxCte");
 	}
 	| ID 
 	{
 		insertarEnArrayComparacionTipos(yylval.str_val);
-
-		indiceAux = crearTerceto("=","_auxCte","_");
-		poner_en_pila(&pila,&indiceAux);
-		crearTerceto("=",yylval.str_val,"_auxCte");
+		insertarEnArrayTercetos("=",yylval.str_val,"_auxCte");
+		
 	};
 	  
 entrada_salida:
@@ -475,6 +481,7 @@ factor:
 	ID					
 	{	
 		insertarEnArrayComparacionTipos(yylval.str_val);
+		printf("\t\t ID: %s\n",yylval.str_val);		
 		indiceFactor = crearTerceto(yylval.str_val,"_","_");	
 	}
 	| CONST_INT			
@@ -653,4 +660,34 @@ char * tipoConstanteConvertido(char* tipoVar)
 				}
 	}
 	return tipoVar;
+}
+
+void insertarEnArrayTercetos(char *operador, char *operando1, char *operando2)
+{
+	struct struct_Terceto tercetoAux;
+	strcpy(tercetoAux.operador, operador);
+    strcpy(tercetoAux.operandoIzq, operando1);
+    strcpy(tercetoAux.operandoDer, operando2);
+    arrayTercetos[longitud_arrayTercetos] = tercetoAux;
+    longitud_arrayTercetos++;
+}
+
+void imprimirArrayTercetos()
+{
+	printf("\n ARRAY TERCETOS: \n");
+	int i;
+	for (i = 0; i < longitud_arrayTercetos; i++)
+    {
+        printf("[%d] (%s, %s, %s)\n", i, arrayTercetos[i].operador, arrayTercetos[i].operandoIzq, arrayTercetos[i].operandoDer);
+    }
+}
+
+void crearTercetosDelArray()
+{
+	int i;
+	for (i = 0; i < longitud_arrayTercetos; i++)
+    {
+		crearTerceto(arrayTercetos[i].operador, arrayTercetos[i].operandoIzq, arrayTercetos[i].operandoDer);
+    }
+	longitud_arrayTercetos = 0;
 }

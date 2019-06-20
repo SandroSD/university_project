@@ -2,7 +2,7 @@
 
 DEFVAR	
  n : FLOAT
- a,b,i,c : INTEGER
+ a,b,d,i,c : INTEGER
  cadena, s : STRING
 ENDDEF
 
@@ -13,4 +13,106 @@ linea /*
 */ Comentario */ Anidado /* /*
 
 a:=b
-	
+
+c:=d
+
+i:=1	
+a:=15
+n:= 99.99
+n:= .99
+n:= 99.
+n:=-542.43
+s:=""
+c:=1*2
+
+*/ CICLO WHILE /*
+while (a<7)
+	i:=5 + b
+endwhile
+
+*/ CICLO ESPECIAL (Tema especial 1) /*
+while a IN [a+1, c+2, b/1] 
+DO
+	i:=5 + b
+endwhile
+
+*/ LONGITUD (Tema especial 2) /*
+a:=long([a,b,3,3,6,20,c,b])
+
+*/ CONDICION 1 (&&) /*
+if (i==15 && a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 2 (AND) /*
+if (i==15 AND a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 3 (and) /*
+if (i==15 and a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 4 (||) /*
+if (i==15 || a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 5 (OR) /*
+if (i==15 OR a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 6 (or) /*
+if (i==15 or a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 7 (not) /*
+if (not a!=4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 8 (NOT) /*
+if (NOT a==4) THEN
+	i:=16
+ENDIF
+
+*/ CONDICION 9 (longitud) /*
+if (long([30,60])==2) THEN
+	i:=16
+ENDIF
+
+*/ IF CON ELSE (condicion simple) /*
+if (a==2) THEN
+	i:=16
+ELSE
+	i:=32
+ENDIF
+
+*/ IF CON ELSE (condicion doble AND) /*
+if (a>2 AND b==1) THEN
+	i:=16
+ELSE
+	i:=32
+ENDIF
+
+*/ IF CON ELSE (condicion doble OR) /*
+if (a>2 or b==1) THEN
+	i:=16
+ELSE
+	i:=32
+ENDIF
+
+*/ DISPLAY Y GET /*
+GET n
+DISPLAY b
+DISPLAY "ewr"
+display "ewr"
+get n
+display i1
+display "@%asdr"
+display "@% > = FA <asdr"
+
+

@@ -53,9 +53,7 @@
 	int indiceAux, indiceUltimo, indiceIzq, indiceDer, indiceComparador, indiceComparador1, indiceComparador2,
 	indiceId;
 	int indicePrincipioBloque;
-
-	// Test
-	struct struct_Terceto tercetoAEncolar;
+	char idAsignarStr[50];
 
 %}
 
@@ -264,36 +262,32 @@ lista_variables_constantes:
 			| CONST_INT { indiceLongitud = crearTerceto("=","_auxLong","1"); };
 
 asignacion:
-			lista_id OP_ASIG expresion 	
+			lista_id expresion 	
 			{	printf("\t\tFIN LINEA ASIGNACION\n");
 
 				compararTipos();
 
-				crearTerceto("=","_auxCte",armarIndiceD(indiceExpresion));
+				crearTerceto("=",idAsignarStr,armarIndiceD(indiceExpresion));
 				
-				crearTercetosDelArray();
+				// crearTercetosDelArray();
 			}
-			| lista_id OP_ASIG longitud 	
+			| lista_id longitud 	
 			{	printf("\t\tFIN LINEA ASIGNACION LONGITUD\n");
 
 				compararTipos();
 
-				crearTerceto("=","_auxCte",armarIndiceD(indiceLongitud));
+				crearTerceto("=",idAsignarStr,armarIndiceD(indiceLongitud));
 
-				crearTercetosDelArray();
+				// crearTercetosDelArray();
 			}	;
 
 lista_id:
-	lista_id OP_ASIG ID
-	{ 
-		insertarEnArrayComparacionTipos(yylval.str_val);
-		insertarEnArrayTercetos("=",yylval.str_val,"_auxCte");
-	}
-	| ID 
+	ID OP_ASIG
 	{
 		insertarEnArrayComparacionTipos(yylval.str_val);
-		insertarEnArrayTercetos("=",yylval.str_val,"_auxCte");
-		
+		strcpy(idAsignarStr, yylval.str_val);
+
+		// insertarEnArrayTercetos("=",yylval.str_val,"_auxCte");
 	};
 	  
 entrada_salida:
@@ -480,8 +474,7 @@ termino:
 factor:
 	ID					
 	{	
-		insertarEnArrayComparacionTipos(yylval.str_val);
-		printf("\t\t ID: %s\n",yylval.str_val);		
+		insertarEnArrayComparacionTipos(yylval.str_val);	
 		indiceFactor = crearTerceto(yylval.str_val,"_","_");	
 	}
 	| CONST_INT			
@@ -548,7 +541,7 @@ void validarDeclaracionTipoDato(char * tipo)
 		else 
 		{
 			char msg[300];
-			sprintf(msg, "ERROR en etapa GCI - Variable \'%s\'ya declarada", arrayDeclaraciones[i]);
+			sprintf(msg, "ERROR en etapa GCI - Variable \'%s\' ya declarada", arrayDeclaraciones[i]);
 			yyerror(msg);
 		}
 	}

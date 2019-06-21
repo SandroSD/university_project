@@ -321,7 +321,7 @@ seleccion:
 				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
 				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
 				sacar_de_pila(&pila_condicion_doble, &indiceDesapilado); 
-				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceComparador));
+				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceComparador+1));
 			}
 		}
 	}

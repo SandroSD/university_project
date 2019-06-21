@@ -20,6 +20,11 @@ void insertarTokenEnTS(char *tipo, char *nombre)
 	posicion_en_ts++;
 }
 
+int obtenerTamTS()
+{
+	return posicion_en_ts;
+}
+
 int existeTokenEnTS(char *nombre)
 {
 	int i;

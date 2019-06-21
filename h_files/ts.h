@@ -22,5 +22,6 @@ char *recuperarTipoTS(char *);
 char *recuperarValorTS(char *);
 int crearArchivoTS();
 void debugTS();
+int obtenerTamTS();
 
 #endif

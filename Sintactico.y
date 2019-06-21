@@ -703,11 +703,8 @@ char * tipoConstanteConvertido(char* tipoVar)
 //////// ASSEMBLER ///////
 
 void generarASM(){
-    // Abrir archivo
-    
-	pfASM = fopen("Final.asm", "w");        
-
-	// imprimirTercetos();
+    // Crear archivo
+	pfASM = fopen("Final.asm", "w");
 
     // Crear pilas para sacar los tercetos.
     crear_pila(&pila);
@@ -734,17 +731,49 @@ void generarEncabezado(){
 }
 
 void generarDatos(){
+    //Encabezado del sector de datos
+    fprintf(pfASM, "\t\n.DATA ; comienzo de la zona de datos.\n");    
+    fprintf(pfASM, "\tTRUE equ 1\n");
+    fprintf(pfASM, "\tFALSE equ 0\n");
+    fprintf(pfASM, "\tMAXTEXTSIZE equ %d\n",COTA_STR);
 
+	int i;
+	int tamTS = obtenerTamTS();
+
+	for(i=0; i<tamTS; i++)
+	{
+		if(strcmp(tablaSimbolos[i].tipo, "CONST_INT") == 0)
+		{
+			fprintf(pfASM, "\t");
+            fprintf(pfASM, "%s dd %s\n",tablaSimbolos[i].nombre, tablaSimbolos[i].nombre);
+		}
+		if(strcmp(tablaSimbolos[i].tipo, "CONST_REAL") == 0)
+		{
+			fprintf(pfASM, "\t");
+            fprintf(pfASM, "%s dd %s\n",tablaSimbolos[i].nombre, tablaSimbolos[i].nombre);
+		}
+		if(strcmp(tablaSimbolos[i].tipo, "CONST_STR") == 0)
+		{
+			fprintf(pfASM, "\t");
+			int longitud = atoi(tablaSimbolos[i].nombre);
+            fprintf(pfASM, "%s db %s, '$', %d dup(?)\n", tablaSimbolos[i].nombre, tablaSimbolos[i].nombre, (COTA_STR - longitud));
+		}
+	}
 }
 
 void generarCodigo(){
-
+	int i;
+	int tamTercetos = obtenerIndiceActual();
+	for(i=0; i<tamTercetos; i++)
+	{
+		// tercetos[i]
+	}
 }
 
 void generarFin(){
     fprintf(pfASM, "\nTERMINAR: ;Fin de ejecución.\n");
-    fprintf(pfASM, "\tmov ax, 4C00h ; termina la ejecución.\n");
-    fprintf(pfASM, "\tint 21h; syscall\n");
-    fprintf(pfASM, "\nEND START;final del archivo.");    
+    fprintf(pfASM, "\tmov ax, 4C00h ;termina la ejecución.\n");
+    fprintf(pfASM, "\tint 21h ;syscall\n");
+    fprintf(pfASM, "\nEND START ;final del archivo.");    
 }
 

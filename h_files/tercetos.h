@@ -21,5 +21,6 @@ char *armarIndiceI(int);
 char *armarIndiceD(int);
 int obtenerIndiceActual();
 int crearArchivoTercetosIntermedia();
+void imprimirTercetos();
 
 #endif

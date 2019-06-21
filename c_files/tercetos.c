@@ -87,3 +87,12 @@ int crearArchivoTercetosIntermedia()
 
     return TODO_OK;
 }
+
+void imprimirTercetos()
+{
+    int i;
+    for (i = 0; i < tamTercetos; i++)
+    {
+        printf("[%d] (%s, %s, %s)\n", i, tercetos[i].operador, tercetos[i].operandoIzq, tercetos[i].operandoDer);
+    }
+}

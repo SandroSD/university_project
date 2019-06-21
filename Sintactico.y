@@ -45,8 +45,8 @@
 	int longitud_arrayComparacionTipos = 0; // incremento en el array arrayComparacionTipos
 
 	// Cola estatica para guardar aquellos tercetos que se escriben antes.
-	struct struct_Terceto arrayTercetos[1000];
-	int longitud_arrayTercetos = 0;
+	// struct struct_Terceto arrayTercetos[1000];
+	// int longitud_arrayTercetos = 0;
 
 	// Auxiliar para manejar tercetos;
 	int indiceExpresion, indiceTermino, indiceFactor, indiceLongitud;
@@ -54,6 +54,18 @@
 	indiceId;
 	int indicePrincipioBloque;
 	char idAsignarStr[50];
+
+	// Para assembler
+	FILE * pfASM; // Final.asm
+	t_pila pila;  // Pila saltos
+	t_pila pVariables;  // Pila variables
+
+	void generarASM();
+	void generarEncabezado();
+	void generarDatos();
+	void generarCodigo();
+	void imprimirInstrucciones();
+	void generarFin();
 
 %}
 
@@ -117,7 +129,9 @@
 programa:   
 	{	printf("\tInicia el COMPILADOR\n\n");	} 
 	est_declaracion bloque 
-	{	printf("\n\tFin COMPILADOR OK\n");	}	;
+	{	printf("\n\tFin COMPILADOR OK\n");	
+		generarASM();
+	}	;
 		
 est_declaracion:
 	DEFVAR {	printf("\t\tDECLARACIONES DEFVAR\n");	} 
@@ -655,32 +669,82 @@ char * tipoConstanteConvertido(char* tipoVar)
 	return tipoVar;
 }
 
-void insertarEnArrayTercetos(char *operador, char *operando1, char *operando2)
-{
-	struct struct_Terceto tercetoAux;
-	strcpy(tercetoAux.operador, operador);
-    strcpy(tercetoAux.operandoIzq, operando1);
-    strcpy(tercetoAux.operandoDer, operando2);
-    arrayTercetos[longitud_arrayTercetos] = tercetoAux;
-    longitud_arrayTercetos++;
+// void insertarEnArrayTercetos(char *operador, char *operando1, char *operando2)
+// {
+// 	struct struct_Terceto tercetoAux;
+// 	strcpy(tercetoAux.operador, operador);
+//     strcpy(tercetoAux.operandoIzq, operando1);
+//     strcpy(tercetoAux.operandoDer, operando2);
+//     arrayTercetos[longitud_arrayTercetos] = tercetoAux;
+//     longitud_arrayTercetos++;
+// }
+
+// void imprimirArrayTercetos()
+// {
+// 	printf("\n ARRAY TERCETOS: \n");
+// 	int i;
+// 	for (i = 0; i < longitud_arrayTercetos; i++)
+//     {
+//         printf("[%d] (%s, %s, %s)\n", i, arrayTercetos[i].operador, arrayTercetos[i].operandoIzq, arrayTercetos[i].operandoDer);
+//     }
+// }
+
+// void crearTercetosDelArray()
+// {
+// 	int i;
+// 	for (i = 0; i < longitud_arrayTercetos; i++)
+//     {
+// 		crearTerceto(arrayTercetos[i].operador, arrayTercetos[i].operandoIzq, arrayTercetos[i].operandoDer);
+//     }
+// 	longitud_arrayTercetos = 0;
+// }
+
+
+//////// ASSEMBLER ///////
+
+void generarASM(){
+    // Abrir archivo
+    
+	pfASM = fopen("Final.asm", "w");        
+
+	// imprimirTercetos();
+
+    // Crear pilas para sacar los tercetos.
+    crear_pila(&pila);
+    crear_pila(&pVariables);
+
+    // Generar archivo ASM
+    fprintf(pfASM, ";\n;ARCHIVO FINAL.ASM\n;\n");
+
+    generarEncabezado();
+    generarDatos();    
+    generarCodigo();    
+    generarFin();
+
+    // Cerrar archivo
+    fclose(pfASM);
 }
 
-void imprimirArrayTercetos()
-{
-	printf("\n ARRAY TERCETOS: \n");
-	int i;
-	for (i = 0; i < longitud_arrayTercetos; i++)
-    {
-        printf("[%d] (%s, %s, %s)\n", i, arrayTercetos[i].operador, arrayTercetos[i].operandoIzq, arrayTercetos[i].operandoDer);
-    }
+void generarEncabezado(){
+    fprintf(pfASM, "\nINCLUDE macros2.asm\t\t ;incluye macros\n");
+    fprintf(pfASM, "INCLUDE number.asm\t\t ;incluye el asm para impresion de numeros\n");   		 
+    fprintf(pfASM, "\n.MODEL LARGE ; tipo del modelo de memoria usado.\n");
+    fprintf(pfASM, ".386\n");
+    fprintf(pfASM, ".STACK 200h ; bytes en el stack\n");              
 }
 
-void crearTercetosDelArray()
-{
-	int i;
-	for (i = 0; i < longitud_arrayTercetos; i++)
-    {
-		crearTerceto(arrayTercetos[i].operador, arrayTercetos[i].operandoIzq, arrayTercetos[i].operandoDer);
-    }
-	longitud_arrayTercetos = 0;
+void generarDatos(){
+
 }
+
+void generarCodigo(){
+
+}
+
+void generarFin(){
+    fprintf(pfASM, "\nTERMINAR: ;Fin de ejecución.\n");
+    fprintf(pfASM, "\tmov ax, 4C00h ; termina la ejecución.\n");
+    fprintf(pfASM, "\tint 21h; syscall\n");
+    fprintf(pfASM, "\nEND START;final del archivo.");    
+}
+

@@ -23,5 +23,6 @@ char *recuperarValorTS(char *);
 int crearArchivoTS();
 void debugTS();
 int obtenerTamTS();
+void prepararTSParaAssembler();
 
 #endif

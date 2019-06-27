@@ -1,39 +1,98 @@
-;
-;ARCHIVO FINAL.ASM
-;
 
 INCLUDE macros2.asm		 ;incluye macros
 INCLUDE number.asm		 ;incluye el asm para impresion de numeros
 
-.MODEL LARGE ; tipo del modelo de memoria usado.
+.MODEL LARGE		 ; tipo del modelo de memoria usado.
 .386
-.STACK 200h ; bytes en el stack
+.387
+.STACK 200h		 ; bytes en el stack
 	
-.DATA ; comienzo de la zona de datos.
+.DATA		 ; comienzo de la zona de datos.
 	TRUE equ 1
 	FALSE equ 0
 	MAXTEXTSIZE equ 32
-	1 dd 1
-	15 dd 15
-	99.99 dd 99.99
-	.99 dd .99
-	99. dd 99.
-	-542.43 dd -542.43
-	"" db "", '$', 32 dup(?)
-	2 dd 2
-	7 dd 7
-	5 dd 5
-	3 dd 3
-	6 dd 6
-	20 dd 20
-	4 dd 4
-	16 dd 16
-	30 dd 30
-	60 dd 60
-	32 dd 32
-	"ewr" db "ewr", '$', 32 dup(?)
-	"@%asdr" db "@%asdr", '$', 32 dup(?)
-	"@% > = FA <asdr" db "@% > = FA <asdr", '$', 32 dup(?)
+	n dd 0.0
+	a dd 0
+	b dd 0
+	d dd 0
+	i dd 0
+	c dd 0
+	cadena db MAXTEXTSIZE dup(?), '$'
+	s db MAXTEXTSIZE dup(?), '$'
+	&cte1 dd 1
+	&cte2 dd 15
+	&cte3 dd 99.99
+	&cte4 dd .99
+	&cte5 dd 99.
+	&cte6 dd -542.43
+	&cte7 db "", '$', 30 dup(?)
+	&cte8 dd 2
+	&cte9 dd 7
+	&cte10 dd 5
+	&cte11 dd 3
+	&cte12 dd 6
+	&cte13 dd 20
+	&cte14 dd 4
+	&cte15 dd 16
+	&cte16 dd 30
+	&cte17 dd 60
+	&cte18 dd 32
+	&cte19 db "ewr", '$', 27 dup(?)
+	&cte20 db "@%asdr", '$', 24 dup(?)
+	&cte21 db "@% > = FA <asdr", '$', 15 dup(?)
+
+.CODE ;Comienzo de la zona de codigo
+START: 		;Código assembler resultante de compilar el programa fuente.
+	mov AX,@DATA 		;Inicializa el segmento de datos
+	mov DS,AX
+	finit
+
+	;MULTIPLICACION
+	;CMP
+	;SUMA
+	;SUMA
+	;CMP
+	;SUMA
+	;CMP
+	;DIVISION
+	;CMP
+	;SUMA
+	;SUMA
+	;SUMA
+	;SUMA
+	;SUMA
+	;SUMA
+	;SUMA
+	;SUMA
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;SUMA
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;CMP
+	;GET
+	;DISPLAY
+	;DISPLAY
+	;DISPLAY
+	;GET
+	;DISPLAY
+	;DISPLAY
+	;DISPLAY
 
 TERMINAR: ;Fin de ejecución.
 	mov ax, 4C00h ;termina la ejecución.

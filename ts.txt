@@ -7,24 +7,24 @@ i                             INTEGER
 c                             INTEGER     
 cadena                        STRING      
 s                             STRING      
-_1                            CONST_INT   1                             1           
-_15                           CONST_INT   15                            2           
-_99.99                        CONST_REAL  99.99                         5           
-_.99                          CONST_REAL  .99                           3           
-_99.                          CONST_REAL  99.                           3           
-_-542.43                      CONST_REAL  -542.43                       7           
-_""                           CONST_STR   ""                            2           
-_2                            CONST_INT   2                             1           
-_7                            CONST_INT   7                             1           
-_5                            CONST_INT   5                             1           
-_3                            CONST_INT   3                             1           
-_6                            CONST_INT   6                             1           
-_20                           CONST_INT   20                            2           
-_4                            CONST_INT   4                             1           
-_16                           CONST_INT   16                            2           
-_30                           CONST_INT   30                            2           
-_60                           CONST_INT   60                            2           
-_32                           CONST_INT   32                            2           
-_"ewr"                        CONST_STR   "ewr"                         5           
-_"@%asdr"                     CONST_STR   "@%asdr"                      8           
-_"@% > = FA <asdr"            CONST_STR   "@% > = FA <asdr"             17          
+&cte1                        CONST_INT   1                                         
+&cte2                        CONST_INT   15                                        
+&cte3                        CONST_REAL  99.99                                     
+&cte4                        CONST_REAL  .99                                       
+&cte5                        CONST_REAL  99.                                       
+&cte6                        CONST_REAL  -542.43                                   
+&cte7                        CONST_STR   ""                            2           
+&cte8                        CONST_INT   2                                         
+&cte9                        CONST_INT   7                                         
+&cte10                       CONST_INT   5                                         
+&cte11                       CONST_INT   3                                         
+&cte12                       CONST_INT   6                                         
+&cte13                       CONST_INT   20                                        
+&cte14                       CONST_INT   4                                         
+&cte15                       CONST_INT   16                                        
+&cte16                       CONST_INT   30                                        
+&cte17                       CONST_INT   60                                        
+&cte18                       CONST_INT   32                                        
+&cte19                       CONST_STR   "ewr"                         5           
+&cte20                       CONST_STR   "@%asdr"                      8           
+&cte21                       CONST_STR   "@% > = FA <asdr"             17          

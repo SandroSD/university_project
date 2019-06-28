@@ -65,6 +65,19 @@ char *recuperarValorTS(char *nombre)
 	return ERROR;
 }
 
+char *recuperarNombreTS(char *valor)
+{
+	int i;
+	for (i = 0; i < posicion_en_ts; i++)
+	{
+		if (strcmp(valor, tablaSimbolos[i].valor) == 0)
+		{
+			return tablaSimbolos[i].nombre;
+		}
+	}
+	return ERROR;
+}
+
 void debugTS()
 {
 	int i;
@@ -92,6 +105,9 @@ void prepararTSParaAssembler()
 			char nuevoNombre[100] = "";
 			strcat(nuevoNombre, tablaSimbolos[i].nombre);
 			strcpy(tablaSimbolos[i].nombre, nuevoNombre);
+			
+			// solo a fines practicos
+			strcpy(tablaSimbolos[i].valor, tablaSimbolos[i].nombre);
 		}
 		else
 		{
@@ -151,4 +167,14 @@ int crearArchivoTS()
 	fclose(archivo);
 
 	return TODO_OK;
+}
+
+
+void imprimirTS()
+{
+	int i;
+	for (i = 0; i < posicion_en_ts; i++)
+	{
+		printf("%-29s%-12s%-30s%-12s\n",tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+	}
 }

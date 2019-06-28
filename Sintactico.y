@@ -26,7 +26,6 @@
 	void compararTipos();
 	char * tipoConstanteConvertido(char*);
 	void insertarEnArrayTercetos(char *operador, char *operando1, char *operando2);
-	void imprimirArrayTercetos();
 	void crearTercetosDelArray();
 
 	// Declaro la pila (estructura externa que me servira para resolver GCI)
@@ -758,19 +757,25 @@ void generarDatos(){
 			fprintf(pfASM, "\t%s db %s, '$', %d dup(?)\n", tablaSimbolos[i].nombre, tablaSimbolos[i].valor, size);
 		}
 	}
+	// Auxiliares declarados
+	int tamTercetos = obtenerIndiceActual();
+	for(i=0; i<tamTercetos; i++)
+	{
+		fprintf(pfASM, "\t@aux%d dd 0.0\n",i);
+	}
 }
 
 void imprimirFuncString(){
     int c;
     FILE *file;
     file = fopen("string.asm", "r");
-    // if (file) {
-    //     // fprintf(pfASM,"\n");
-    //     // while ((c = getc(file)) != EOF)
-    //     //     fprintf(pfASM,"%c",c);
-    //     // fprintf(pfASM,"\n\n");
-    //     // fclose(file);
-    // }
+    if (file) {
+        fprintf(pfASM,"\n");
+        while ((c = getc(file)) != EOF)
+            fprintf(pfASM,"%c",c);
+        fprintf(pfASM,"\n\n");
+        fclose(file);
+    }
 }
 
 void generarCodigo(){
@@ -788,7 +793,6 @@ void generarCodigo(){
 	int i;
 	int tamTercetos = obtenerIndiceActual();
 
-	// char aux[50];
 	char aux1[50];
 	char aux2[50];
 
@@ -807,12 +811,22 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux1);
 
 			char * tipo = recuperarTipoTS(aux1);
+    		char auxTipo[50] = "";
+			strcpy(auxTipo, tipo);
 
-			if(strcmp(tipo,"CONST_STR"))
+			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
-				
+				fprintf(pfASM, "\tmov ax,@DATA\n");
+                fprintf(pfASM, "\tmov es,ax\n");
+                fprintf(pfASM, "\tmov si,OFFSET %s ;apunta el origen al auxiliar\n",aux1);
+                fprintf(pfASM, "\tmov di,OFFSET %s ;apunta el destino a la cadena\n",aux2);
+				fprintf(pfASM, "\tcall COPIAR ;copia los string\n\n");
 			}
-
+			else
+			{
+				fprintf(pfASM, "\tfld %s\n",aux1);
+                fprintf(pfASM, "\tfstp %s\n\n",aux2);
+			}
 
 		}
 		
@@ -822,46 +836,70 @@ void generarCodigo(){
 			fprintf(pfASM,"\t;CMP\n");
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
+
+			fprintf(pfASM, "\tfld %s\n",aux1);
+            fprintf(pfASM, "\tfld %s\n",aux2);                    
+            fprintf(pfASM, "\tfcomp\n");
+            fprintf(pfASM, "\tfstsw ax\n");
+            fprintf(pfASM, "\tfwait\n");
+            fprintf(pfASM, "\tsahf\n\n");
 		}
 		
 		if(strstr(operador, "ETIQ") != NULL)
 		{
 			flag = 1;
+			// sprintf(aux,"ETIQUETA%d:",nTerc);                            
+            // fprintf(pfASM,"ETIQUETA%d:\n",nTerc);
+            // strcpy(last,aux);   
 		}
 
 		if(strcmp(operador, "JMP") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tjmp ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "JE") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tje ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "JNE") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tjne ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "JB") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tjb ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "JBE") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tjbe ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "JA") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tja ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "JAE") == 0)
 		{
 			flag = 1;
+			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
+            fprintf(pfASM, "\tjae ETIQUETA%d\n",indiceIzquierdo);
 		}
 
 		if(strcmp(operador, "-") == 0)
@@ -870,6 +908,16 @@ void generarCodigo(){
 			fprintf(pfASM,"\t;RESTA\n");
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
+
+            fprintf(pfASM, "\tfld %s\n",aux1);
+            fprintf(pfASM, "\tfld %s\n",aux2);                   
+            fprintf(pfASM, "\tfsub\n");
+			
+			char auxStr[50] = "";
+			sprintf(auxStr, "@aux%d",i);
+			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
+			// poner_en_pila(&pVariables,&auxStr);
+
 		}
 
 		if(strcmp(operador, "+") == 0)
@@ -878,6 +926,16 @@ void generarCodigo(){
 			fprintf(pfASM,"\t;SUMA\n");
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
+
+			fprintf(pfASM, "\tfld %s\n",aux1);
+            fprintf(pfASM, "\tfld %s\n",aux2);
+            fprintf(pfASM, "\tfadd\n");
+
+			char auxStr[50] = "";
+			sprintf(auxStr, "@aux%d",i);
+			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
+			// poner_en_pila(&pVariables,&auxStr);
+
 		}
 
 		if(strcmp(operador, "*") == 0)
@@ -886,6 +944,15 @@ void generarCodigo(){
 			fprintf(pfASM,"\t;MULTIPLICACION\n");
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
+
+			fprintf(pfASM, "\tfld %s\n",aux1);
+            fprintf(pfASM, "\tfld %s\n",aux2);
+            fprintf(pfASM, "\tfmul\n");
+
+			char auxStr[50] = "";
+			sprintf(auxStr, "@aux%d",i);
+			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
+			// poner_en_pila(&pVariables,&auxStr);
 		}
 
 		if(strcmp(operador, "/") == 0)
@@ -894,6 +961,15 @@ void generarCodigo(){
 			fprintf(pfASM,"\t;DIVISION\n");
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
+
+			fprintf(pfASM, "\tfld %s\n",aux1);
+            fprintf(pfASM, "\tfld %s\n",aux2);
+            fprintf(pfASM, "\tfdiv\n");
+
+			char auxStr[50] = "";
+			sprintf(auxStr, "@aux%d",i);
+			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
+			// poner_en_pila(&pVariables,&auxStr);
 		}
 
 		if(strcmp(operador, "GET") == 0)
@@ -901,6 +977,26 @@ void generarCodigo(){
 			flag = 1;
 			fprintf(pfASM,"\t;GET\n");
 			sacar_de_pila(&pVariables,&aux1);
+
+			char * tipo = recuperarTipoTS(aux1);
+    		char auxTipo[50] = "";
+			strcpy(auxTipo, tipo);
+
+			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
+			{
+				fprintf(pfASM,"\tdisplayString %s\n",aux1);
+                fprintf(pfASM, "\tnewLine 1\n\n");
+			}
+			if(strcmp(tipo,"CONST_INT") == 0 || strcmp(tipo,"INTEGER") == 0)
+			{
+   				fprintf(pfASM,"\tDisplayInteger %s 2\n",aux1);
+                fprintf(pfASM, "\tnewLine 1\n\n");
+			}
+			if(strcmp(tipo,"CONST_REAL") == 0 || strcmp(tipo,"REAL") == 0)
+			{
+				fprintf(pfASM,"\tDisplayFloat %s 2\n",aux1);
+                fprintf(pfASM, "\tnewLine 1\n\n");
+			}
 		}
 
 		if(strcmp(operador, "DISPLAY") == 0)
@@ -908,11 +1004,27 @@ void generarCodigo(){
 			flag = 1;
 			fprintf(pfASM,"\t;DISPLAY\n");
 			sacar_de_pila(&pVariables,&aux1);
+
+			char * tipo = recuperarTipoTS(aux1);
+    		char auxTipo[50] = "";
+			strcpy(auxTipo, tipo);
+
+			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
+			{
+				fprintf(pfASM,"\tgetString %s\n\n",aux1);
+			}
+			else
+			{
+				fprintf(pfASM,"\tGetFloat %s\n\n",aux1);
+			}
 		}
 
 		if(flag == 0)
 		{
-            poner_en_pila(&pVariables,&operador);
+			char * nombre = recuperarNombreTS(operador);
+			char auxNombre[50] = "";
+			strcpy(auxNombre, nombre);
+            poner_en_pila(&pVariables,&auxNombre);
 		}		
 	
 	}

@@ -111,7 +111,7 @@ DISPLAY b
 DISPLAY "HOLA"
 display "hola"
 get n
-display i1
+display i
 display "mundo"
 display "world"
 

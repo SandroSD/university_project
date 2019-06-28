@@ -19,6 +19,8 @@ int modificarTerceto(int, int, char *);
 char *obtenerTerceto(int, int);
 char *armarIndiceI(int);
 char *armarIndiceD(int);
+int desarmarIndice(char *);
+void removeChars(char *, char);
 int obtenerIndiceActual();
 int crearArchivoTercetosIntermedia();
 void imprimirTercetos();

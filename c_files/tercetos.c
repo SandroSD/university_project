@@ -59,6 +59,31 @@ char * armarIndiceD(int intIndice)
 	return strIndice;
 }
 
+int desarmarIndice(char * indiceStr)
+{
+    removeChars(indiceStr,'[');
+    removeChars(indiceStr,']');
+    int r = atoi(indiceStr);
+    return r;
+}
+
+void removeChars(char *s, char c)
+{
+    int writer = 0, reader = 0;
+
+    while (s[reader])
+    {
+        if (s[reader]!=c) 
+        {   
+            s[writer++] = s[reader];
+        }
+
+        reader++;       
+    }
+
+    s[writer]=0;
+}
+
 int obtenerIndiceActual()
 {
     return tamTercetos;

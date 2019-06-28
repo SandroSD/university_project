@@ -20,6 +20,11 @@ void insertarTokenEnTS(char *tipo, char *nombre)
 	posicion_en_ts++;
 }
 
+int obtenerTamTS()
+{
+	return posicion_en_ts;
+}
+
 int existeTokenEnTS(char *nombre)
 {
 	int i;
@@ -60,6 +65,19 @@ char *recuperarValorTS(char *nombre)
 	return ERROR;
 }
 
+char *recuperarNombreTS(char *valor)
+{
+	int i;
+	for (i = 0; i < posicion_en_ts; i++)
+	{
+		if (strcmp(valor, tablaSimbolos[i].valor) == 0)
+		{
+			return tablaSimbolos[i].nombre;
+		}
+	}
+	return ERROR;
+}
+
 void debugTS()
 {
 	int i;
@@ -72,6 +90,49 @@ void debugTS()
 	}
 
 	printf("\n====== FIN DEBUG TABLA SIMBOLOS ======\n\n");
+}
+
+void prepararTSParaAssembler()
+{
+	int i;
+	int contador = 1;
+	for (i = 0; i < posicion_en_ts; i++)
+	{
+		if ((strcmp(tablaSimbolos[i].tipo, "INTEGER") == 0)
+		|| (strcmp(tablaSimbolos[i].tipo, "REAL") == 0) 
+		|| (strcmp(tablaSimbolos[i].tipo, "STRING") == 0))
+		{
+			char nuevoNombre[100] = "";
+			strcat(nuevoNombre, tablaSimbolos[i].nombre);
+			strcpy(tablaSimbolos[i].nombre, nuevoNombre);
+			
+			// solo a fines practicos
+			strcpy(tablaSimbolos[i].valor, tablaSimbolos[i].nombre);
+		}
+		else
+		{
+			strcpy(tablaSimbolos[i].valor, tablaSimbolos[i].nombre);
+
+			if(strcmp(tablaSimbolos[i].tipo, "CONST_STR") == 0)
+			{
+				int longitud = strlen(tablaSimbolos[i].valor);
+
+				char longitudStr[10];
+				sprintf(longitudStr, "%d", longitud); 
+				strcpy(tablaSimbolos[i].longitud, longitudStr);
+
+			}
+
+			char nuevoNombreConstantes[10] = "&cte";
+			char contadorStr[10];
+			sprintf(contadorStr, "%d", contador); 
+			strcat(nuevoNombreConstantes, contadorStr);
+			strcpy(tablaSimbolos[i].nombre, nuevoNombreConstantes);
+
+			contador++;
+		}
+	}
+
 }
 
 int crearArchivoTS()
@@ -99,12 +160,21 @@ int crearArchivoTS()
 		}
 		else
 		{
-			int longitud = strlen(tablaSimbolos[i].nombre);
-			fprintf(archivo, "_%-29s%-12s%-30s%-12d\n",
-					tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].nombre, longitud);
+			fprintf(archivo, "%-29s%-12s%-30s%-12s\n",
+			tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
 		}
 	}
 	fclose(archivo);
 
 	return TODO_OK;
+}
+
+
+void imprimirTS()
+{
+	int i;
+	for (i = 0; i < posicion_en_ts; i++)
+	{
+		printf("%-29s%-12s%-30s%-12s\n",tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+	}
 }

@@ -37,9 +37,10 @@ INCLUDE number.asm		 ;incluye el asm para impresion de numeros
 	&cte16 dd 30
 	&cte17 dd 60
 	&cte18 dd 32
-	&cte19 db "ewr", '$', 27 dup(?)
-	&cte20 db "@%asdr", '$', 24 dup(?)
-	&cte21 db "@% > = FA <asdr", '$', 15 dup(?)
+	&cte19 db "HOLA", '$', 26 dup(?)
+	&cte20 db "hola", '$', 26 dup(?)
+	&cte21 db "mundo", '$', 25 dup(?)
+	&cte22 db "hola mundo", '$', 20 dup(?)
 
 .CODE ;Comienzo de la zona de codigo
 START: 		;Código assembler resultante de compilar el programa fuente.
@@ -47,9 +48,20 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 	mov DS,AX
 	finit
 
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;MULTIPLICACION
+	;ASIGNACIÓN
 	;CMP
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
 	;CMP
 	;SUMA
@@ -57,34 +69,61 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 	;DIVISION
 	;CMP
 	;SUMA
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
 	;CMP
+	;ASIGNACIÓN
 	;CMP
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;SUMA
+	;ASIGNACIÓN
+	;CMP
+	;ASIGNACIÓN
+	;CMP
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;CMP
 	;CMP
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;CMP
 	;CMP
-	;CMP
-	;CMP
+	;ASIGNACIÓN
+	;ASIGNACIÓN
 	;GET
 	;DISPLAY
 	;DISPLAY

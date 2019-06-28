@@ -282,7 +282,9 @@ asignacion:
 
 				compararTipos();
 
-				crearTerceto("=",idAsignarStr,armarIndiceD(indiceExpresion));
+				indiceAux = crearTerceto(idAsignarStr,"_","_");
+
+				crearTerceto("=",armarIndiceI(indiceAux),armarIndiceD(indiceExpresion));
 				
 				// crearTercetosDelArray();
 			}
@@ -291,7 +293,9 @@ asignacion:
 
 				compararTipos();
 
-				crearTerceto("=",idAsignarStr,armarIndiceD(indiceLongitud));
+				indiceAux = crearTerceto(idAsignarStr,"_","_");
+
+				crearTerceto("=",armarIndiceI(indiceAux),armarIndiceD(indiceLongitud));
 
 				// crearTercetosDelArray();
 			}	;
@@ -306,9 +310,21 @@ lista_id:
 	};
 	  
 entrada_salida:
-	GET	ID				{	crearTerceto("GET",yylval.str_val,"_");	}
-	| DISPLAY ID 		{	crearTerceto("DISPLAY",yylval.str_val,"_");	}
-	| DISPLAY CONST_STR	{	crearTerceto("DISPLAY",yylval.str_val,"_");	};
+	GET	ID				
+	{	
+		indiceAux = crearTerceto(yylval.str_val,"_","_");
+		crearTerceto("GET",armarIndiceI(indiceAux),"_");	
+	}
+	| DISPLAY ID 		
+	{	
+		indiceAux = crearTerceto(yylval.str_val,"_","_");
+		crearTerceto("DISPLAY",armarIndiceI(indiceAux),"_");
+	}
+	| DISPLAY CONST_STR	
+	{	
+		indiceAux = crearTerceto(yylval.str_val,"_","_");
+		crearTerceto("DISPLAY",armarIndiceI(indiceAux),"_");
+	};
 
 seleccion:
 	IF CAR_PA condicion CAR_PC THEN
@@ -683,7 +699,7 @@ void generarASM(){
 	pfASM = fopen("Final.asm", "w");
 
     // Crear pilas para sacar los tercetos.
-    crear_pila(&pila);
+    
     crear_pila(&pVariables);
 
     generarEncabezado();
@@ -756,84 +772,99 @@ void generarCodigo(){
 	int i;
 	int tamTercetos = obtenerIndiceActual();
 
-	int aux1[15];
-	int aux2[15];
+	char aux[50];
+	char aux1[50];
+	char aux2[50];
 
-	int flag = 0;
+	int flag;
 	for(i=0; i<tamTercetos; i++)
 	{
-		char operador[15];
+		char operador[50];
 		strcpy(operador,tercetos[i].operador);
-		// Asignacion
-		if(strcmp(operador, ":=") == 0)
+		flag = 0;
+		
+		if(strcmp(operador, "=") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;ASIGNACIÓN\n");
 		}
-		// Comparacion
+		
 		if(strcmp(operador, "CMP") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;CMP\n");
 		}
-		// Etiqueta
+		
 		if(strstr(operador, "ETIQ") != NULL)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JMP") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JE") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JNE") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JB") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JBE") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JA") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "JAE") == 0)
 		{
 			flag = 1;
 		}
+
 		if(strcmp(operador, "-") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;RESTA\n");
 		}
+
 		if(strcmp(operador, "+") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;SUMA\n");
 		}
+
 		if(strcmp(operador, "*") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;MULTIPLICACION\n");
 		}
+
 		if(strcmp(operador, "/") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;DIVISION\n");
 		}
+
 		if(strcmp(operador, "GET") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;GET\n");
 		}
+
 		if(strcmp(operador, "DISPLAY") == 0)
 		{
 			flag = 1;
@@ -842,262 +873,16 @@ void generarCodigo(){
 
 		if(flag == 0)
 		{
-			// PONER EN PILA
-		}
-
-
-	// 	 case TERC_ASIG:
-    //         fprintf(pfASM,"\t;ASIGNACIÓN\n");
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             pos = existeTokenEnTS(aux,VRBL);
-    //             ObtenerItemTS(pos,&simbolo);
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 if(strcmp(aux2,"@aux4STR") == 0){                               	                    
-    //                     fprintf(pfASM, "\tmov ax,@DATA\n");
-    //                     fprintf(pfASM, "\tmov es,ax\n");
-    //                     fprintf(pfASM, "\tmov si,OFFSET %s ;apunta el origen al auxiliar\n",aux2);
-    //                     fprintf(pfASM, "\tmov di,OFFSET %s ;apunta el destino a la cadena\n",aux);
-    //                     fprintf(pfASM, "\tcall COPIAR ;copia los string\n\n");
-    //                 }else if(simbolo.tipo == CTE_STR){
-    //                     fprintf(pfASM, "\tmov ax,@DATA\n");
-    //                     fprintf(pfASM, "\tmov es,ax\n");
-    //                     fprintf(pfASM, "\tmov si,OFFSET %s ;apunta el origen al auxiliar\n",aux2);
-    //                     fprintf(pfASM, "\tmov di,OFFSET %s ;apunta el destino a la cadena\n",aux);
-    //                     fprintf(pfASM, "\tcall COPIAR ;copia los string\n\n");
-    //                 }else{
-    //                     fprintf(pfASM, "\tfld %s\n",aux2);
-    //                     fprintf(pfASM, "\tfstp %s\n\n",aux);
-    //                 }
-    //             }
-    //         }            
-    //         break;
-    //     case TERC_CMP:
-    //         fprintf(pfASM,"\t;CMP\n");
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 fprintf(pfASM, "\tfld %s\n",aux);
-    //                 fprintf(pfASM, "\tfld %s\n",aux2);                    
-    //                 fprintf(pfASM, "\tfcomp\n");
-    //                 fprintf(pfASM, "\tfstsw ax\n");
-    //                 fprintf(pfASM, "\tfwait\n");
-    //                 fprintf(pfASM, "\tsahf\n\n");                            
-    //             }
-    //         }            
-    //         break;
-    //     case TERC_ETIQ:
-    //         sprintf(aux,"ETIQUETA%d:",nTerc);                            
-    //         fprintf(pfASM,"ETIQUETA%d:\n",nTerc);                
-    //         strcpy(last,aux);            
-    //         break;
-    //     case TERC_JMP:
-    //         sprintf(aux,"ETIQUETA%d", terc.opIzq);
-    //         fprintf(pfASM, "\tjmp %s\n",aux);
-    //         break;
-    //     case TERC_JE:
-    //         sprintf(aux,"ETIQUETA%d", terc.opDer);
-    //         fprintf(pfASM, "\tje %s\n",aux);
-    //         break;
-    //     case TERC_JNE:
-    //         sprintf(aux,"ETIQUETA%d", terc.opDer);
-    //         fprintf(pfASM, "\tjne %s\n",aux);
-    //         break;
-    //     case TERC_JB:
-    //         sprintf(aux,"ETIQUETA%d", terc.opDer);
-    //         fprintf(pfASM, "\tjb %s\n",aux);
-    //         break;
-    //     case TERC_JBE:
-    //         sprintf(aux,"ETIQUETA%d", terc.opDer);
-    //         fprintf(pfASM, "\tjbe %s\n",aux);
-    //         break;   
-    //     case TERC_JA:
-    //         sprintf(aux,"ETIQUETA%d", terc.opDer);
-    //         fprintf(pfASM, "\tja %s\n",aux);
-    //         break;                             
-    //     case TERC_JAE:
-    //         sprintf(aux,"ETIQUETA%d", terc.opDer);
-    //         fprintf(pfASM, "\tjae %s\n",aux);      
-    //         break;
-    //     case TERC_RESTA:
-    //         fprintf(pfASM,"\t;RESTA\n");
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 fprintf(pfASM, "\tfld %s\n",aux2);
-    //                 fprintf(pfASM, "\tfld %s\n",aux);                   
-    //                 fprintf(pfASM, "\tfsub\n");
-    //                 //fprintf(pfASM, "\tlocal %s\n",aux); // Variable local en vez de los aux de arriba
-
-    //                 //guardar valor en aux
-    //                 if(strcmp(aux,"@aux2") == 0){
-    //                     fprintf(pfASM, "\tfstp @aux3\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux3",255);
-    //                 }else{
-    //                     fprintf(pfASM, "\tfstp @aux2\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux2",255);
-    //                 }
-    //             }                
-    //         }                        
-    //         break;        
-    //     case TERC_SUMA:
-    //         fprintf(pfASM,"\t;SUMA\n");
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 fprintf(pfASM, "\tfld %s\n",aux);
-    //                 fprintf(pfASM, "\tfld %s\n",aux2);
-    //                 fprintf(pfASM, "\tfadd\n");
-    //                 //fprintf(pfASM, "\tlocal %s\n",aux); // Variable local en vez de los aux de arriba
-
-    //                 //guardar valor en aux
-    //                 if(strcmp(aux,"@aux2") == 0){
-    //                     fprintf(pfASM, "\tfstp @aux3\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux3",255);
-    //                 }else{
-    //                     fprintf(pfASM, "\tfstp @aux2\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux2",255);
-    //                 }
-    //             }                
-    //         }     
-                                 
-    //         break;
-    //     case TERC_MULT:
-    //         fprintf(pfASM,"\t;MULTIPLICACION\n");
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 fprintf(pfASM, "\tfld %s\n",aux);
-    //                 fprintf(pfASM, "\tfld %s\n",aux2);
-    //                 fprintf(pfASM, "\tfmul\n");
-    //                 //fprintf(pfASM, "\tlocal %s\n",aux); // Variable local en vez de los aux de arriba
-
-    //                 //guardar valor en aux
-    //                 if(strcmp(aux,"@aux2") == 0){
-    //                     fprintf(pfASM, "\tfstp @aux3\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux3",255);
-    //                 }else{
-    //                     fprintf(pfASM, "\tfstp @aux2\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux2",255);
-    //                 }
-    //             }                
-    //         }  
-    //         break;
-    //     case TERC_DIV:
-    //         fprintf(pfASM,"\t;DIVISION\n");
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 fprintf(pfASM, "\tfld %s\n",aux2);
-    //                 fprintf(pfASM, "\tfld %s\n",aux);
-    //                 fprintf(pfASM, "\tfdiv\n");
-    //                 //fprintf(pfASM, "\tlocal %s\n",aux); // Variable local en vez de los aux de arriba
-
-    //                 //guardar valor en aux
-    //                 if(strcmp(aux,"@aux2") == 0){
-    //                     fprintf(pfASM, "\tfstp @aux3\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux3",255);
-    //                 }else{
-    //                     fprintf(pfASM, "\tfstp @aux2\n\n");                    
-    //                     poner_en_pila(&pVariables,"@aux2",255);
-    //                 }
-    //             }                
-    //         }  
-    //         break;
-    //     case TERC_CONCAT:            
-    //         if(sacar_de_pila(&pVariables,aux,255) != PILA_VACIA)
-    //         {
-    //             if(sacar_de_pila(&pVariables,aux2,255) != PILA_VACIA)
-    //             {
-    //                 fprintf(pfASM,"\t;CONCATENACIÓN\n");
-    //                 fprintf(pfASM, "\tmov ax,@DATA\n");
-    //                 fprintf(pfASM, "\tmov es,ax\n");
-    //                 fprintf(pfASM, "\tmov si,OFFSET %s ;apunta el origen a la primer cadena\n",aux2);
-    //                 fprintf(pfASM, "\tmov di,OFFSET @aux4STR ;apunta el destino al auxiliar\n");
-    //                 fprintf(pfASM, "\tcall COPIAR ;copia los string\n\n");
-
-    //                 fprintf(pfASM, "\tmov ax,@DATA\n");
-    //                 fprintf(pfASM, "\tmov es,ax\n");
-    //                 fprintf(pfASM, "\tmov si,OFFSET %s ;apunta el origen a la segunda cadena\n",aux);
-    //                 fprintf(pfASM, "\tmov di,OFFSET @aux4STR ;concatena los string\n");
-    //                 fprintf(pfASM, "\tcall CONCAT\n\n");
-
-    //                 poner_en_pila(&pVariables,"@aux4STR",255);
-    //             }
-    //         }
-    //         break;
-    //     case TERC_WRITE:            
-    //         sprintf(aux,"%s",terc.opIzq);            
-    //         fprintf(pfASM,"\t;WRITE\n");
-    //         tConst = aux[0];
-    //         switch(tConst){                
-    //             case '_':
-    //                 pos = existeTokenEnTS(terc.opIzq,VRBL);
-    //                 ObtenerItemTS(pos,&simbolo);
-    //                 switch(simbolo.tipo){
-    //                     case CTE_STR:
-    //                         fprintf(pfASM,"\tdisplayString %s\n",aux);
-    //                         fprintf(pfASM, "\tnewLine 1\n\n");
-    //                         break;
-    //                     default:
-    //                         fprintf(pfASM,"\tDisplayFloat %s 2\n",aux);
-    //                         fprintf(pfASM, "\tnewLine 1\n\n");
-    //                         break;
-    //                 }
-    //                 break;
-    //             case '&':
-    //                 fprintf(pfASM,"\tDisplayInteger %s 2\n",aux);
-    //                 fprintf(pfASM, "\tnewLine 1\n\n");                    
-    //                 break;
-    //             case '$':
-    //                 fprintf(pfASM,"\tDisplayFloat %s 2\n",aux);
-    //                 fprintf(pfASM, "\tnewLine 1\n\n");                    
-    //                 break;
-    //             case '@':
-    //                 fprintf(pfASM,"\tDisplayFloat %s 2\n",aux);
-    //                 fprintf(pfASM, "\tnewLine 1\n\n");                
-    //                 break;                
-    //             default:
-    //                 fprintf(pfASM,"\tdisplayString %s\n",aux);
-    //                 fprintf(pfASM, "\tnewLine 1\n\n");
-    //                 break;
-    //         }                        
-    //         break;
-    //     case TERC_READ:
-    //         sprintf(aux,"%s",terc.opIzq);
-    //         fprintf(pfASM,"\t;READ\n");
-    //         pos = existeTokenEnTS(terc.opIzq,VRBL);
-    //         ObtenerItemTS(pos,&simbolo);
-    //         switch(simbolo.tipo){
-    //             case CTE_STR:
-    //                 fprintf(pfASM,"\tgetString %s\n\n",aux);
-    //                 break;
-    //             default:
-    //                 fprintf(pfASM,"\tGetFloat %s\n\n",aux);
-    //                 break;
-    //         }             
-    //         break;
-    //     case TERC_END:
-    //         sprintf(aux,"ETIQUETA%d:",nTerc);                            
-    //         fprintf(pfASM,"ETIQUETA%d:\n",nTerc);                
-    //         strcpy(last,aux);            
-    //         fprintf(pfASM,"\tdisplayString cte5\n");
-    //         fprintf(pfASM,"\tnewLine 1\n");
-    //         fprintf(pfASM,"\tgetChar\n");
-    //         break;        
-    //     default:
-    //         sprintf(aux,"%s",terc.operacion);            
-    //         poner_en_pila(&pVariables,&aux,255);
-    //         break;
-    // }
-		
+            poner_en_pila(&pVariables,&operador);
+		}		
 	
+	}
+
+	while(pila_vacia(&pVariables) != PILA_VACIA)
+	{
+		char varApilada[50];
+		sacar_de_pila(&pVariables, &varApilada); 
+		printf("\n Se saco de pila: %s ", varApilada);
 	}
 }
 

@@ -108,11 +108,11 @@ ENDIF
 */ DISPLAY Y GET /*
 GET n
 DISPLAY b
-DISPLAY "ewr"
-display "ewr"
+DISPLAY "HOLA"
+display "hola"
 get n
 display i1
-display "@%asdr"
-display "@% > = FA <asdr"
+display "mundo"
+display "hola mundo"
 
 

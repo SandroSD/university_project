@@ -796,9 +796,12 @@ void generarCodigo(){
 	char aux1[50];
 	char aux2[50];
 
+	char auxEtiqueta[50];
+
 	int flag;
 	for(i=0; i<tamTercetos; i++)
 	{
+		sprintf(auxEtiqueta,"ETIQUETA%d:",i);
 		char operador[50];
 		strcpy(operador,tercetos[i].operador);
 		flag = 0;
@@ -814,6 +817,7 @@ void generarCodigo(){
     		char auxTipo[50] = "";
 			strcpy(auxTipo, tipo);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
 				fprintf(pfASM, "\tmov ax,@DATA\n");
@@ -837,6 +841,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);                    
             fprintf(pfASM, "\tfcomp\n");
@@ -848,8 +853,9 @@ void generarCodigo(){
 		if(strstr(operador, "ETIQ") != NULL)
 		{
 			flag = 1;
+
 			// sprintf(aux,"ETIQUETA%d:",nTerc);                            
-            // fprintf(pfASM,"ETIQUETA%d:\n",nTerc);
+            // fprintf(pfASM,"\n\nETIQUETA%d:\n",i);
             // strcpy(last,aux);   
 		}
 
@@ -909,6 +915,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
             fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);                   
             fprintf(pfASM, "\tfsub\n");
@@ -916,8 +923,8 @@ void generarCodigo(){
 			char auxStr[50] = "";
 			sprintf(auxStr, "@aux%d",i);
 			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
-			// poner_en_pila(&pVariables,&auxStr);
-
+			insertarTokenEnTS("",auxStr);
+			poner_en_pila(&pVariables,&auxStr);
 		}
 
 		if(strcmp(operador, "+") == 0)
@@ -927,6 +934,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);
             fprintf(pfASM, "\tfadd\n");
@@ -934,8 +942,8 @@ void generarCodigo(){
 			char auxStr[50] = "";
 			sprintf(auxStr, "@aux%d",i);
 			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
-			// poner_en_pila(&pVariables,&auxStr);
-
+			insertarTokenEnTS("",auxStr);
+			poner_en_pila(&pVariables,&auxStr);
 		}
 
 		if(strcmp(operador, "*") == 0)
@@ -945,6 +953,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);
             fprintf(pfASM, "\tfmul\n");
@@ -952,7 +961,8 @@ void generarCodigo(){
 			char auxStr[50] = "";
 			sprintf(auxStr, "@aux%d",i);
 			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
-			// poner_en_pila(&pVariables,&auxStr);
+			insertarTokenEnTS("",auxStr);
+			poner_en_pila(&pVariables,&auxStr);
 		}
 
 		if(strcmp(operador, "/") == 0)
@@ -962,6 +972,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);
             fprintf(pfASM, "\tfdiv\n");
@@ -969,7 +980,8 @@ void generarCodigo(){
 			char auxStr[50] = "";
 			sprintf(auxStr, "@aux%d",i);
 			fprintf(pfASM, "\tfstp %s\n\n",auxStr);
-			// poner_en_pila(&pVariables,&auxStr);
+			insertarTokenEnTS("",auxStr);
+			poner_en_pila(&pVariables,&auxStr);
 		}
 
 		if(strcmp(operador, "GET") == 0)
@@ -982,6 +994,7 @@ void generarCodigo(){
     		char auxTipo[50] = "";
 			strcpy(auxTipo, tipo);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
 				fprintf(pfASM,"\tdisplayString %s\n",aux1);
@@ -1009,6 +1022,7 @@ void generarCodigo(){
     		char auxTipo[50] = "";
 			strcpy(auxTipo, tipo);
 
+			fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
 				fprintf(pfASM,"\tgetString %s\n\n",aux1);

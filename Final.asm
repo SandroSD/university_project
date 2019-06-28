@@ -367,38 +367,47 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 	finit
 
 	;ASIGNACIÓN
+	ETIQUETA2:
 	fld b
 	fstp a
 
 	;ASIGNACIÓN
+	ETIQUETA5:
 	fld d
 	fstp c
 
 	;ASIGNACIÓN
+	ETIQUETA8:
 	fld &cte1
 	fstp i
 
 	;ASIGNACIÓN
+	ETIQUETA11:
 	fld &cte2
 	fstp a
 
 	;ASIGNACIÓN
+	ETIQUETA14:
 	fld &cte3
 	fstp n
 
 	;ASIGNACIÓN
+	ETIQUETA17:
 	fld &cte4
 	fstp n
 
 	;ASIGNACIÓN
+	ETIQUETA20:
 	fld &cte5
 	fstp n
 
 	;ASIGNACIÓN
+	ETIQUETA23:
 	fld &cte6
 	fstp n
 
 	;ASIGNACIÓN
+	ETIQUETA26:
 	mov ax,@DATA
 	mov es,ax
 	mov si,OFFSET &cte7 ;apunta el origen al auxiliar
@@ -406,16 +415,19 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 	call COPIAR ;copia los string
 
 	;MULTIPLICACION
+	ETIQUETA29:
 	fld &cte1
 	fld &cte8
 	fmul
 	fstp @aux29
 
 	;ASIGNACIÓN
-	fld &cte1
+	ETIQUETA31:
+	fld @aux29
 	fstp c
 
 	;CMP
+	ETIQUETA35:
 	fld a
 	fld &cte9
 	fcomp
@@ -425,25 +437,29 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jb ETIQUETA43
 	;SUMA
+	ETIQUETA39:
 	fld &cte10
 	fld b
 	fadd
 	fstp @aux39
 
 	;ASIGNACIÓN
-	fld &cte10
+	ETIQUETA41:
+	fld @aux39
 	fstp i
 
 	jmp ETIQUETA32
 	;SUMA
+	ETIQUETA47:
 	fld a
 	fld &cte1
 	fadd
 	fstp @aux47
 
 	;CMP
+	ETIQUETA48:
 	fld a
-	fld a
+	fld @aux47
 	fcomp
 	fstsw ax
 	fwait
@@ -451,14 +467,16 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jne ETIQUETA60
 	;SUMA
+	ETIQUETA52:
 	fld c
 	fld &cte8
 	fadd
 	fstp @aux52
 
 	;CMP
+	ETIQUETA53:
 	fld c
-	fld &cte8
+	fld @aux52
 	fcomp
 	fstsw ax
 	fwait
@@ -466,14 +484,16 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jne ETIQUETA60
 	;DIVISION
+	ETIQUETA57:
 	fld b
 	fld &cte1
 	fdiv
 	fstp @aux57
 
 	;CMP
+	ETIQUETA58:
 	fld b
-	fld &cte1
+	fld @aux57
 	fcomp
 	fstsw ax
 	fwait
@@ -481,95 +501,114 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA66
 	;SUMA
+	ETIQUETA62:
 	fld &cte10
 	fld b
 	fadd
 	fstp @aux62
 
 	;ASIGNACIÓN
-	fld &cte10
+	ETIQUETA64:
+	fld @aux62
 	fstp i
 
 	jmp ETIQUETA43
 	;ASIGNACIÓN
-	fld &cte10
+	ETIQUETA66:
+	fld @aux62
 	fstp i
 
 	;SUMA
-	fld &cte10
+	ETIQUETA67:
+	fld @aux62
 	fld i
 	fadd
 	fstp @aux67
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA68:
+	fld @aux62
+	fstp @aux67
 
 	;SUMA
-	fld &cte10
-	fld i
+	ETIQUETA69:
+	fld @aux62
+	fld @aux67
 	fadd
 	fstp @aux69
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA70:
+	fld @aux62
+	fstp @aux69
 
 	;SUMA
-	fld &cte10
-	fld i
+	ETIQUETA71:
+	fld @aux62
+	fld @aux69
 	fadd
 	fstp @aux71
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA72:
+	fld @aux62
+	fstp @aux71
 
 	;SUMA
-	fld &cte10
-	fld i
+	ETIQUETA73:
+	fld @aux62
+	fld @aux71
 	fadd
 	fstp @aux73
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA74:
+	fld @aux62
+	fstp @aux73
 
 	;SUMA
-	fld &cte10
-	fld i
+	ETIQUETA75:
+	fld @aux62
+	fld @aux73
 	fadd
 	fstp @aux75
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA76:
+	fld @aux62
+	fstp @aux75
 
 	;SUMA
-	fld &cte10
-	fld i
+	ETIQUETA77:
+	fld @aux62
+	fld @aux75
 	fadd
 	fstp @aux77
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA78:
+	fld @aux62
+	fstp @aux77
 
 	;SUMA
-	fld &cte10
-	fld i
+	ETIQUETA79:
+	fld @aux62
+	fld @aux77
 	fadd
 	fstp @aux79
 
 	;ASIGNACIÓN
-	fld &cte10
-	fstp i
+	ETIQUETA80:
+	fld @aux62
+	fstp @aux79
 
 	;ASIGNACIÓN
-	fld &cte10
+	ETIQUETA82:
+	fld @aux62
 	fstp a
 
 	;CMP
+	ETIQUETA85:
 	fld i
 	fld &cte2
 	fcomp
@@ -579,6 +618,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA94
 	;CMP
+	ETIQUETA89:
 	fld a
 	fld &cte14
 	fcomp
@@ -588,10 +628,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA94
 	;ASIGNACIÓN
+	ETIQUETA93:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA96:
 	fld i
 	fld &cte2
 	fcomp
@@ -601,6 +643,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA105
 	;CMP
+	ETIQUETA100:
 	fld a
 	fld &cte14
 	fcomp
@@ -610,10 +653,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA105
 	;ASIGNACIÓN
+	ETIQUETA104:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA107:
 	fld i
 	fld &cte2
 	fcomp
@@ -623,6 +668,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA116
 	;CMP
+	ETIQUETA111:
 	fld a
 	fld &cte14
 	fcomp
@@ -632,10 +678,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA116
 	;ASIGNACIÓN
+	ETIQUETA115:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA118:
 	fld i
 	fld &cte2
 	fcomp
@@ -645,6 +693,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jne ETIQUETA124
 	;CMP
+	ETIQUETA122:
 	fld a
 	fld &cte14
 	fcomp
@@ -654,10 +703,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA127
 	;ASIGNACIÓN
+	ETIQUETA126:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA129:
 	fld i
 	fld &cte2
 	fcomp
@@ -667,6 +718,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jne ETIQUETA135
 	;CMP
+	ETIQUETA133:
 	fld a
 	fld &cte14
 	fcomp
@@ -676,10 +728,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA138
 	;ASIGNACIÓN
+	ETIQUETA137:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA140:
 	fld i
 	fld &cte2
 	fcomp
@@ -689,6 +743,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jne ETIQUETA146
 	;CMP
+	ETIQUETA144:
 	fld a
 	fld &cte14
 	fcomp
@@ -698,10 +753,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA149
 	;ASIGNACIÓN
+	ETIQUETA148:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA151:
 	fld a
 	fld &cte14
 	fcomp
@@ -711,10 +768,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA156
 	;ASIGNACIÓN
+	ETIQUETA155:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA158:
 	fld a
 	fld &cte14
 	fcomp
@@ -724,24 +783,29 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jne ETIQUETA163
 	;ASIGNACIÓN
+	ETIQUETA162:
 	fld &cte15
 	fstp i
 
 	;ASIGNACIÓN
+	ETIQUETA163:
 	fld &cte15
 	fstp i
 
 	;SUMA
+	ETIQUETA164:
 	fld &cte15
 	fld i
 	fadd
 	fstp @aux164
 
 	;ASIGNACIÓN
+	ETIQUETA165:
 	fld &cte15
-	fstp i
+	fstp @aux164
 
 	;CMP
+	ETIQUETA167:
 	fld &cte15
 	fld &cte8
 	fcomp
@@ -751,10 +815,12 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA172
 	;ASIGNACIÓN
+	ETIQUETA171:
 	fld &cte15
 	fstp i
 
 	;CMP
+	ETIQUETA174:
 	fld a
 	fld &cte8
 	fcomp
@@ -764,15 +830,18 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA180
 	;ASIGNACIÓN
+	ETIQUETA178:
 	fld &cte15
 	fstp i
 
 	jmp ETIQUETA183
 	;ASIGNACIÓN
+	ETIQUETA182:
 	fld &cte18
 	fstp i
 
 	;CMP
+	ETIQUETA185:
 	fld a
 	fld &cte8
 	fcomp
@@ -782,6 +851,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	ja ETIQUETA195
 	;CMP
+	ETIQUETA189:
 	fld b
 	fld &cte1
 	fcomp
@@ -791,15 +861,18 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA195
 	;ASIGNACIÓN
+	ETIQUETA193:
 	fld &cte15
 	fstp i
 
 	jmp ETIQUETA198
 	;ASIGNACIÓN
+	ETIQUETA197:
 	fld &cte18
 	fstp i
 
 	;CMP
+	ETIQUETA200:
 	fld a
 	fld &cte8
 	fcomp
@@ -809,6 +882,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	jbe ETIQUETA206
 	;CMP
+	ETIQUETA204:
 	fld b
 	fld &cte1
 	fcomp
@@ -818,38 +892,48 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 	je ETIQUETA210
 	;ASIGNACIÓN
+	ETIQUETA208:
 	fld &cte15
 	fstp i
 
 	jmp ETIQUETA213
 	;ASIGNACIÓN
+	ETIQUETA212:
 	fld &cte18
 	fstp i
 
 	;GET
+	ETIQUETA214:
 	DisplayFloat n 2
 	newLine 1
 
 	;DISPLAY
+	ETIQUETA216:
 	GetFloat b
 
 	;DISPLAY
+	ETIQUETA218:
 	getString &cte19
 
 	;DISPLAY
+	ETIQUETA220:
 	getString &cte20
 
 	;GET
+	ETIQUETA222:
 	DisplayFloat n 2
 	newLine 1
 
 	;DISPLAY
+	ETIQUETA224:
 	GetFloat i
 
 	;DISPLAY
+	ETIQUETA226:
 	getString &cte21
 
 	;DISPLAY
+	ETIQUETA228:
 	getString &cte22
 
 

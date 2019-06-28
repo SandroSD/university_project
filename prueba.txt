@@ -113,6 +113,6 @@ display "hola"
 get n
 display i1
 display "mundo"
-display "hola mundo"
+display "world"
 
 

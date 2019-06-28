@@ -760,8 +760,24 @@ void generarDatos(){
 	}
 }
 
+void imprimirFuncString(){
+    int c;
+    FILE *file;
+    file = fopen("string.asm", "r");
+    // if (file) {
+    //     // fprintf(pfASM,"\n");
+    //     // while ((c = getc(file)) != EOF)
+    //     //     fprintf(pfASM,"%c",c);
+    //     // fprintf(pfASM,"\n\n");
+    //     // fclose(file);
+    // }
+}
+
 void generarCodigo(){
     fprintf(pfASM, "\n.CODE ;Comienzo de la zona de codigo\n");
+
+	//Imprimo funciones de manejo de strings
+    imprimirFuncString();
 
     //Inicio codigo usuario
     fprintf(pfASM, "START: \t\t;Código assembler resultante de compilar el programa fuente.\n");
@@ -772,7 +788,7 @@ void generarCodigo(){
 	int i;
 	int tamTercetos = obtenerIndiceActual();
 
-	char aux[50];
+	// char aux[50];
 	char aux1[50];
 	char aux2[50];
 
@@ -787,12 +803,25 @@ void generarCodigo(){
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;ASIGNACIÓN\n");
+			sacar_de_pila(&pVariables,&aux2);
+			sacar_de_pila(&pVariables,&aux1);
+
+			char * tipo = recuperarTipoTS(aux1);
+
+			if(strcmp(tipo,"CONST_STR"))
+			{
+				
+			}
+
+
 		}
 		
 		if(strcmp(operador, "CMP") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;CMP\n");
+			sacar_de_pila(&pVariables,&aux2);
+			sacar_de_pila(&pVariables,&aux1);
 		}
 		
 		if(strstr(operador, "ETIQ") != NULL)
@@ -839,36 +868,46 @@ void generarCodigo(){
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;RESTA\n");
+			sacar_de_pila(&pVariables,&aux2);
+			sacar_de_pila(&pVariables,&aux1);
 		}
 
 		if(strcmp(operador, "+") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;SUMA\n");
+			sacar_de_pila(&pVariables,&aux2);
+			sacar_de_pila(&pVariables,&aux1);
 		}
 
 		if(strcmp(operador, "*") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;MULTIPLICACION\n");
+			sacar_de_pila(&pVariables,&aux2);
+			sacar_de_pila(&pVariables,&aux1);
 		}
 
 		if(strcmp(operador, "/") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;DIVISION\n");
+			sacar_de_pila(&pVariables,&aux2);
+			sacar_de_pila(&pVariables,&aux1);
 		}
 
 		if(strcmp(operador, "GET") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;GET\n");
+			sacar_de_pila(&pVariables,&aux1);
 		}
 
 		if(strcmp(operador, "DISPLAY") == 0)
 		{
 			flag = 1;
 			fprintf(pfASM,"\t;DISPLAY\n");
+			sacar_de_pila(&pVariables,&aux1);
 		}
 
 		if(flag == 0)
@@ -880,7 +919,7 @@ void generarCodigo(){
 
 	while(pila_vacia(&pVariables) != PILA_VACIA)
 	{
-		char varApilada[50];
+		char varApilada[50] = "";
 		sacar_de_pila(&pVariables, &varApilada); 
 		printf("\n Se saco de pila: %s ", varApilada);
 	}

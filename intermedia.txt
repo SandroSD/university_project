@@ -226,5 +226,5 @@ Lista de Tercetos
 [224] (DISPLAY, [223], _)
 [225] ("mundo", _, _)
 [226] (DISPLAY, [225], _)
-[227] ("hola mundo", _, _)
+[227] ("world", _, _)
 [228] (DISPLAY, [227], _)

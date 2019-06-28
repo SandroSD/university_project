@@ -29,3 +29,17 @@ s                             STRING
 &cte20                       CONST_STR   "hola"                        6           
 &cte21                       CONST_STR   "mundo"                       7           
 &cte22                       CONST_STR   "world"                       7           
+@aux29                                                                             
+@aux39                                                                             
+@aux47                                                                             
+@aux52                                                                             
+@aux57                                                                             
+@aux62                                                                             
+@aux67                                                                             
+@aux69                                                                             
+@aux71                                                                             
+@aux73                                                                             
+@aux75                                                                             
+@aux77                                                                             
+@aux79                                                                             
+@aux164                                                                            

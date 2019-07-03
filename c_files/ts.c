@@ -152,16 +152,19 @@ int crearArchivoTS()
 	// Se escribe linea por linea
 	for (i = 0; i < posicion_en_ts; i++)
 	{
-		if ((strcmp(tablaSimbolos[i].tipo, "INTEGER") == 0)
-		|| (strcmp(tablaSimbolos[i].tipo, "REAL") == 0) 
-		|| (strcmp(tablaSimbolos[i].tipo, "STRING") == 0))
+		if(tablaSimbolos[i].nombre[0] != '_')
 		{
-			fprintf(archivo, "%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
-		}
-		else
-		{
-			fprintf(archivo, "%-29s%-12s%-30s%-12s\n",
-			tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+			if ((strcmp(tablaSimbolos[i].tipo, "INTEGER") == 0)
+			|| (strcmp(tablaSimbolos[i].tipo, "REAL") == 0) 
+			|| (strcmp(tablaSimbolos[i].tipo, "STRING") == 0))
+			{
+				fprintf(archivo, "%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+			}
+			else
+			{
+				fprintf(archivo, "%-29s%-12s%-30s%-12s\n",
+				tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+			}
 		}
 	}
 	fclose(archivo);

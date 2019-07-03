@@ -32,13 +32,14 @@ INCLUDE number.asm		 ;incluye el asm para impresion de numeros
 	&cte11 dd 3
 	&cte12 dd 6
 	&cte13 dd 20
+	_auxLong dd 0
 	&cte14 dd 4
 	&cte15 dd 16
 	&cte16 dd 30
 	&cte17 dd 60
 	&cte18 dd 32
 	&cte19 db "HOLA", '$', 26 dup(?)
-	&cte20 db "hola", '$', 26 dup(?)
+	&cte20 db "hello", '$', 25 dup(?)
 	&cte21 db "mundo", '$', 25 dup(?)
 	&cte22 db "world", '$', 25 dup(?)
 	@aux0 dd 0.0

@@ -26,20 +26,6 @@ s                             STRING
 &cte17                       CONST_INT   60                                        
 &cte18                       CONST_INT   32                                        
 &cte19                       CONST_STR   "HOLA"                        6           
-&cte20                       CONST_STR   "hola"                        6           
+&cte20                       CONST_STR   "hello"                       7           
 &cte21                       CONST_STR   "mundo"                       7           
 &cte22                       CONST_STR   "world"                       7           
-@aux29                                                                             
-@aux39                                                                             
-@aux47                                                                             
-@aux52                                                                             
-@aux57                                                                             
-@aux62                                                                             
-@aux67                                                                             
-@aux69                                                                             
-@aux71                                                                             
-@aux73                                                                             
-@aux75                                                                             
-@aux77                                                                             
-@aux79                                                                             
-@aux164                                                                            

@@ -128,8 +128,10 @@
 programa:   
 	{	printf("\tInicia el COMPILADOR\n\n");	} 
 	est_declaracion bloque 
-	{	printf("\n\tFin COMPILADOR OK\n");	
+	{	printf("\n\tFin COMPILADOR OK\n");
 		prepararTSParaAssembler();
+		crearArchivoTS();
+		crearArchivoTercetosIntermedia();
 		generarASM();
 	}	;
 		
@@ -259,6 +261,9 @@ longitud:
 			{ 
 				printf("\t\tLONGITUD (especial) \n");	
 				insertarEnArrayComparacionTiposDirecto("INTEGER");
+				
+				// Se inserta solamente para tener la declaracion luego en assembler
+				insertarTokenEnTS("INTEGER","_auxLong");
 			} ;
 
 lista_variables_constantes:
@@ -545,8 +550,6 @@ int main(int argc, char *argv[])
 		yyparse();
     }
     fclose(yyin);
-    crearArchivoTS();
-    crearArchivoTercetosIntermedia();
     return 0;
 }
 

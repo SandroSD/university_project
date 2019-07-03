@@ -109,7 +109,7 @@ ENDIF
 GET n
 DISPLAY b
 DISPLAY "HOLA"
-display "hola"
+display "hello"
 get n
 display i
 display "mundo"

@@ -444,6 +444,9 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 	fld @aux29
 	fstp c
 
+
+
+ETIQUETA1:
 	;CMP
 	fld a
 	fld &cte9
@@ -464,6 +467,9 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 	fstp i
 
 	jmp ETIQUETA32
+
+
+ETIQUETA2:
 	;SUMA
 	fld a
 	fld &cte1

@@ -634,7 +634,7 @@ char * negarComparador(char* comparador)
 char * obtenerNuevoNombreEtiqueta()
 {
 	static char nombreEtiqueta[30];
-	sprintf(nombreEtiqueta, "ETIQ%d", incremento_etiqueta);
+	sprintf(nombreEtiqueta, "ETIQUETA%d", incremento_etiqueta);
 	incremento_etiqueta++;
 	return nombreEtiqueta;
 }
@@ -830,7 +830,7 @@ void generarCodigo(){
 	int flag;
 	for(i=0; i<tamTercetos; i++)
 	{
-		sprintf(auxEtiqueta,"ETIQUETA%d:",i);
+		// sprintf(auxEtiqueta,"ETIQUETA%d:",i);
 		char operador[50];
 		strcpy(operador,tercetos[i].operador);
 		flag = 0;
@@ -880,13 +880,13 @@ void generarCodigo(){
             fprintf(pfASM, "\tsahf\n\n");
 		}
 		
-		if(strstr(operador, "ETIQ") != NULL)
+		if(strstr(operador, "ETIQUETA") != NULL)
 		{
 			flag = 1;
-
 			// sprintf(aux,"ETIQUETA%d:",nTerc);                            
             // fprintf(pfASM,"\n\nETIQUETA%d:\n",i);
-            // strcpy(last,aux);   
+
+			fprintf(pfASM,"\n\n%s:\n",operador);
 		}
 
 		if(strcmp(operador, "JMP") == 0)

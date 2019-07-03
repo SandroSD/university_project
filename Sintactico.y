@@ -269,16 +269,42 @@ longitud:
 lista_variables_constantes:
 			lista_variables_constantes CAR_COMA ID
 			{ 
-				indiceAux = crearTerceto("+","_auxLong","1");
-				indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
+				// indiceAux = crearTerceto("+","_auxLong","1");
+				// indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
+
+				indiceIzq = crearTerceto("_auxLong","_","_");
+				indiceDer = crearTerceto("1","_","_");
+				indiceAux = crearTerceto("+", armarIndiceI(indiceIzq), armarIndiceD(indiceDer));
+				indiceIzq = crearTerceto("_auxLong","_","_");
+				indiceLongitud = crearTerceto("=", armarIndiceI(indiceIzq), armarIndiceD(indiceAux));
 			}
 			| lista_variables_constantes CAR_COMA CONST_INT	
 			{ 
-				indiceAux = crearTerceto("+","_auxLong","1");
-				indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
+				// indiceAux = crearTerceto("+","_auxLong","1");
+				// indiceLongitud = crearTerceto("=","_auxLong",armarIndiceD(indiceAux));
+
+				indiceIzq = crearTerceto("_auxLong","_","_");
+				indiceDer = crearTerceto("1","_","_");
+				indiceAux = crearTerceto("+", armarIndiceI(indiceIzq), armarIndiceD(indiceDer));
+				indiceIzq = crearTerceto("_auxLong","_","_");
+				indiceLongitud = crearTerceto("=", armarIndiceI(indiceIzq), armarIndiceD(indiceAux));
 			}
-			| ID		{ indiceLongitud = crearTerceto("=","_auxLong","1"); }
-			| CONST_INT { indiceLongitud = crearTerceto("=","_auxLong","1"); };
+			| ID		
+			{ 
+				// indiceLongitud = crearTerceto("=","_auxLong","1"); 
+
+				indiceIzq = crearTerceto("_auxLong","_","_");
+				indiceDer = crearTerceto("1","_","_");
+				indiceLongitud = crearTerceto("=", armarIndiceI(indiceIzq), armarIndiceD(indiceDer));
+			}
+			| CONST_INT 
+			{ 
+				// indiceLongitud = crearTerceto("=","_auxLong","1"); 
+
+				indiceIzq = crearTerceto("_auxLong","_","_");
+				indiceDer = crearTerceto("1","_","_");
+				indiceLongitud = crearTerceto("=", armarIndiceI(indiceIzq), armarIndiceD(indiceDer));
+			};
 
 asignacion:
 			lista_id expresion 	
@@ -820,7 +846,8 @@ void generarCodigo(){
     		char auxTipo[50] = "";
 			strcpy(auxTipo, tipo);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
+
 			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
 				fprintf(pfASM, "\tmov ax,@DATA\n");
@@ -844,7 +871,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);                    
             fprintf(pfASM, "\tfcomp\n");
@@ -918,7 +945,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
             fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);                   
             fprintf(pfASM, "\tfsub\n");
@@ -937,7 +964,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);
             fprintf(pfASM, "\tfadd\n");
@@ -956,7 +983,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);
             fprintf(pfASM, "\tfmul\n");
@@ -975,7 +1002,7 @@ void generarCodigo(){
 			sacar_de_pila(&pVariables,&aux2);
 			sacar_de_pila(&pVariables,&aux1);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			fprintf(pfASM, "\tfld %s\n",aux1);
             fprintf(pfASM, "\tfld %s\n",aux2);
             fprintf(pfASM, "\tfdiv\n");
@@ -997,7 +1024,7 @@ void generarCodigo(){
     		char auxTipo[50] = "";
 			strcpy(auxTipo, tipo);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
 				fprintf(pfASM,"\tdisplayString %s\n",aux1);
@@ -1025,7 +1052,7 @@ void generarCodigo(){
     		char auxTipo[50] = "";
 			strcpy(auxTipo, tipo);
 
-			fprintf(pfASM,"\t%s\n",auxEtiqueta);
+			// fprintf(pfASM,"\t%s\n",auxEtiqueta);
 			if(strcmp(tipo,"CONST_STR") == 0 || strcmp(tipo,"STRING") == 0)
 			{
 				fprintf(pfASM,"\tgetString %s\n\n",aux1);

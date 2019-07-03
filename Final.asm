@@ -299,6 +299,38 @@ INCLUDE number.asm		 ;incluye el asm para impresion de numeros
 	@aux254 dd 0.0
 	@aux255 dd 0.0
 	@aux256 dd 0.0
+	@aux257 dd 0.0
+	@aux258 dd 0.0
+	@aux259 dd 0.0
+	@aux260 dd 0.0
+	@aux261 dd 0.0
+	@aux262 dd 0.0
+	@aux263 dd 0.0
+	@aux264 dd 0.0
+	@aux265 dd 0.0
+	@aux266 dd 0.0
+	@aux267 dd 0.0
+	@aux268 dd 0.0
+	@aux269 dd 0.0
+	@aux270 dd 0.0
+	@aux271 dd 0.0
+	@aux272 dd 0.0
+	@aux273 dd 0.0
+	@aux274 dd 0.0
+	@aux275 dd 0.0
+	@aux276 dd 0.0
+	@aux277 dd 0.0
+	@aux278 dd 0.0
+	@aux279 dd 0.0
+	@aux280 dd 0.0
+	@aux281 dd 0.0
+	@aux282 dd 0.0
+	@aux283 dd 0.0
+	@aux284 dd 0.0
+	@aux285 dd 0.0
+	@aux286 dd 0.0
+	@aux287 dd 0.0
+	@aux288 dd 0.0
 
 .CODE ;Comienzo de la zona de codigo
 
@@ -446,7 +478,7 @@ START: 		;Código assembler resultante de compilar el programa fuente.
 
 
 
-ETIQUETA1:
+ETIQ_inicio_while_32:
 	;CMP
 	fld a
 	fld &cte9
@@ -455,77 +487,86 @@ ETIQUETA1:
 	fwait
 	sahf
 
-	jb ETIQUETA43
+	jb ETIQ_inicio_while_44
+
+
+ETIQ_bloque_37:
 	;SUMA
 	fld &cte10
 	fld b
 	fadd
-	fstp @aux39
+	fstp @aux40
 
 	;ASIGNACIÓN
-	fld @aux39
+	fld @aux40
 	fstp i
 
-	jmp ETIQUETA32
+	jmp ETIQ_inicio_while_32
 
 
-ETIQUETA2:
+ETIQ_inicio_while_44:
 	;SUMA
 	fld a
 	fld &cte1
 	fadd
-	fstp @aux47
+	fstp @aux48
 
 	;CMP
 	fld a
-	fld @aux47
+	fld @aux48
 	fcomp
 	fstsw ax
 	fwait
 	sahf
 
-	jne ETIQUETA60
+	jne ETIQ_bloque_61
 	;SUMA
 	fld c
 	fld &cte8
 	fadd
-	fstp @aux52
+	fstp @aux53
 
 	;CMP
 	fld c
-	fld @aux52
+	fld @aux53
 	fcomp
 	fstsw ax
 	fwait
 	sahf
 
-	jne ETIQUETA60
+	jne ETIQ_bloque_61
 	;DIVISION
 	fld b
 	fld &cte1
 	fdiv
-	fstp @aux57
+	fstp @aux58
 
 	;CMP
 	fld b
-	fld @aux57
+	fld @aux58
 	fcomp
 	fstsw ax
 	fwait
 	sahf
 
-	je ETIQUETA66
+	je ETIQ_inicio_longitud_68
+
+
+ETIQ_bloque_61:
 	;SUMA
 	fld &cte10
 	fld b
 	fadd
-	fstp @aux62
+	fstp @aux64
 
 	;ASIGNACIÓN
-	fld @aux62
+	fld @aux64
 	fstp i
 
-	jmp ETIQUETA43
+	jmp ETIQ_inicio_while_44
+
+
+ETIQ_inicio_longitud_68:
 	;ASIGNACIÓN
 	fld _auxLong
 	fstp &cte1
@@ -534,74 +575,74 @@ ETIQUETA2:
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux71
+	fstp @aux74
 
 	;ASIGNACIÓN
-	fld @aux71
+	fld @aux74
 	fstp _auxLong
 
 	;SUMA
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux76
+	fstp @aux79
 
 	;ASIGNACIÓN
-	fld @aux76
+	fld @aux79
 	fstp _auxLong
 
 	;SUMA
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux81
+	fstp @aux84
 
 	;ASIGNACIÓN
-	fld @aux81
+	fld @aux84
 	fstp _auxLong
 
 	;SUMA
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux86
+	fstp @aux89
 
 	;ASIGNACIÓN
-	fld @aux86
+	fld @aux89
 	fstp _auxLong
 
 	;SUMA
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux91
+	fstp @aux94
 
 	;ASIGNACIÓN
-	fld @aux91
+	fld @aux94
 	fstp _auxLong
 
 	;SUMA
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux96
+	fstp @aux99
 
 	;ASIGNACIÓN
-	fld @aux96
+	fld @aux99
 	fstp _auxLong
 
 	;SUMA
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux101
+	fstp @aux104
 
 	;ASIGNACIÓN
-	fld @aux101
+	fld @aux104
 	fstp _auxLong
 
 	;ASIGNACIÓN
-	fld @aux101
+	fld @aux104
 	fstp a
 
 	;CMP
@@ -612,7 +653,7 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA117
+	je ETIQ_fin_seleccion_121
 	;CMP
 	fld a
 	fld &cte14
@@ -621,11 +662,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA117
+	je ETIQ_fin_seleccion_121
+
+
+ETIQ_bloque_117:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_121:
 	;CMP
 	fld i
 	fld &cte2
@@ -634,7 +681,7 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA128
+	je ETIQ_fin_seleccion_134
 	;CMP
 	fld a
 	fld &cte14
@@ -643,11 +690,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA128
+	je ETIQ_fin_seleccion_134
+
+
+ETIQ_bloque_130:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_134:
 	;CMP
 	fld i
 	fld &cte2
@@ -656,7 +709,7 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA139
+	je ETIQ_fin_seleccion_147
 	;CMP
 	fld a
 	fld &cte14
@@ -665,11 +718,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA139
+	je ETIQ_fin_seleccion_147
+
+
+ETIQ_bloque_143:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_147:
 	;CMP
 	fld i
 	fld &cte2
@@ -678,7 +737,10 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	jne ETIQUETA147
+	jne ETIQ_bloque_157
+
+
+ETIQ_bloque_152:
 	;CMP
 	fld a
 	fld &cte14
@@ -687,11 +749,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA150
+	je ETIQ_fin_seleccion_161
+
+
+ETIQ_bloque_157:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_161:
 	;CMP
 	fld i
 	fld &cte2
@@ -700,7 +768,10 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	jne ETIQUETA158
+	jne ETIQ_bloque_171
+
+
+ETIQ_bloque_166:
 	;CMP
 	fld a
 	fld &cte14
@@ -709,11 +780,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA161
+	je ETIQ_fin_seleccion_175
+
+
+ETIQ_bloque_171:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_175:
 	;CMP
 	fld i
 	fld &cte2
@@ -722,7 +799,10 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	jne ETIQUETA169
+	jne ETIQ_bloque_185
+
+
+ETIQ_bloque_180:
 	;CMP
 	fld a
 	fld &cte14
@@ -731,11 +811,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA172
+	je ETIQ_fin_seleccion_189
+
+
+ETIQ_bloque_185:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_189:
 	;CMP
 	fld a
 	fld &cte14
@@ -744,11 +830,17 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA179
+	je ETIQ_fin_seleccion_198
+
+
+ETIQ_bloque_194:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_198:
 	;CMP
 	fld a
 	fld &cte14
@@ -757,11 +849,20 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	jne ETIQUETA186
+	jne ETIQ_fin_seleccion_207
+
+
+ETIQ_bloque_203:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_207:
+
+
+ETIQ_inicio_longitud_208:
 	;ASIGNACIÓN
 	fld _auxLong
 	fstp &cte1
@@ -770,25 +871,31 @@ ETIQUETA2:
 	fld _auxLong
 	fld &cte1
 	fadd
-	fstp @aux191
+	fstp @aux214
 
 	;ASIGNACIÓN
-	fld @aux191
+	fld @aux214
 	fstp _auxLong
 
 	;CMP
-	fld @aux191
+	fld @aux214
 	fld &cte8
 	fcomp
 	fstsw ax
 	fwait
 	sahf
 
-	je ETIQUETA200
+	je ETIQ_fin_seleccion_224
+
+
+ETIQ_bloque_220:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
+
+
+ETIQ_fin_seleccion_224:
 	;CMP
 	fld a
 	fld &cte8
@@ -797,16 +904,22 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA208
+	je 32
+
+
+ETIQ_bloque_229:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
-	jmp ETIQUETA211
+	jmp ETIQ_fin_seleccion_237
 	;ASIGNACIÓN
 	fld &cte18
 	fstp i
 
+
+
+ETIQ_fin_seleccion_237:
 	;CMP
 	fld a
 	fld &cte8
@@ -815,7 +928,7 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	ja ETIQUETA223
+	ja 32
 	;CMP
 	fld b
 	fld &cte1
@@ -824,16 +937,22 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA223
+	je 32
+
+
+ETIQ_bloque_246:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
-	jmp ETIQUETA226
+	jmp ETIQ_fin_seleccion_254
 	;ASIGNACIÓN
 	fld &cte18
 	fstp i
 
+
+
+ETIQ_fin_seleccion_254:
 	;CMP
 	fld a
 	fld &cte8
@@ -842,7 +961,10 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	jbe ETIQUETA234
+	jbe ETIQ_bloque_264
+
+
+ETIQ_bloque_259:
 	;CMP
 	fld b
 	fld &cte1
@@ -851,16 +973,22 @@ ETIQUETA2:
 	fwait
 	sahf
 
-	je ETIQUETA238
+	je 32
+
+
+ETIQ_bloque_264:
 	;ASIGNACIÓN
 	fld &cte15
 	fstp i
 
-	jmp ETIQUETA241
+	jmp ETIQ_fin_seleccion_272
 	;ASIGNACIÓN
 	fld &cte18
 	fstp i
 
+
+
+ETIQ_fin_seleccion_272:
 	;GET
 	DisplayFloat n 2
 	newLine 1

@@ -19,7 +19,7 @@
 	void insertarEnArrayDeclaracion(char *);
 	void validarDeclaracionTipoDato(char *);
 	char * negarComparador(char*);
-	char * obtenerNuevoNombreEtiqueta();
+	char * obtenerNuevoNombreEtiqueta(char *);
 	void insertarEnArrayComparacionTipos(char *);
 	void insertarEnArrayComparacionTiposDirecto(char *);
 	void imprimirArrayComparacionTipos();
@@ -172,10 +172,15 @@ sentencia:
 ciclo:
 	WHILE		
 	{	printf("\t\tWHILE\n"); 
-		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta(),"_","_"); 
+		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta("inicio_while"),"_","_"); 
 		poner_en_pila(&pila,&indiceAux);
 	}
-	CAR_PA condicion CAR_PC { indicePrincipioBloque = obtenerIndiceActual(); }
+	CAR_PA condicion CAR_PC 
+	{
+		// Principio Bloque While
+		// indicePrincipioBloque = crearTerceto(obtenerNuevoNombreEtiqueta("bloque_while"),"_","_");
+		indicePrincipioBloque = obtenerIndiceActual(); 
+	}
 	bloque 
 	ENDWHILE	
 	{	printf("\t\tFIN DEL WHILE\n"); 
@@ -213,7 +218,7 @@ ciclo_especial:
 	WHILE		
 	{
 		printf("\t\tWHILE (especial) \n"); 
-		indiceAux=crearTerceto(obtenerNuevoNombreEtiqueta(),"_","_"); 
+		indiceAux = crearTerceto(obtenerNuevoNombreEtiqueta("inicio_while"),"_","_");
 		poner_en_pila(&pila,&indiceAux);
 	} 
 	ID { indiceId = crearTerceto(yylval.str_val,"_","_"); } IN 
@@ -224,7 +229,7 @@ ciclo_especial:
 		modificarTerceto(indiceDesapilado, 1, "JE");
 		poner_en_pila(&pila,&indiceDesapilado);
 	}
-	DO { indicePrincipioBloque = obtenerIndiceActual(); }
+	DO { indicePrincipioBloque = crearTerceto(obtenerNuevoNombreEtiqueta("bloque"),"_","_"); }
 	bloque 
 	ENDWHILE	
 	{ 
@@ -257,7 +262,11 @@ lista_expresiones:
 			};
 
 longitud: 
-			LONG CAR_PA CAR_CA lista_variables_constantes CAR_CC CAR_PC	
+			LONG CAR_PA CAR_CA 
+			{
+				crearTerceto(obtenerNuevoNombreEtiqueta("inicio_longitud"),"_","_"); 
+			}
+			lista_variables_constantes CAR_CC CAR_PC	
 			{ 
 				printf("\t\tLONGITUD (especial) \n");	
 				insertarEnArrayComparacionTiposDirecto("INTEGER");
@@ -385,6 +394,7 @@ seleccion:
 				modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceComparador+1));
 			}
 		}
+		crearTerceto(obtenerNuevoNombreEtiqueta("fin_seleccion"),"_","_");
 	}
 	| IF CAR_PA condicion CAR_PC THEN 
 	bloque 
@@ -425,15 +435,21 @@ seleccion:
 		int indiceActual = obtenerIndiceActual();
 		sacar_de_pila(&pila, &indiceDesapilado); 
 		modificarTerceto(indiceDesapilado, 2, armarIndiceI(indiceActual));
+		crearTerceto(obtenerNuevoNombreEtiqueta("fin_seleccion"),"_","_");
 	}	; 
 
 condicion:
-			comparacion {   printf("\t\tCOMPARACION\n");}
+			comparacion 
+			{   
+				printf("\t\tCOMPARACION\n");
+				crearTerceto(obtenerNuevoNombreEtiqueta("bloque"),"_","_");
+			}
 			| OP_NOT comparacion			
 			{	printf("\t\tCONDICION NOT\n");
 				char *operador = obtenerTerceto(indiceComparador,1);
 				char *operadorNegado = negarComparador(operador);
 				modificarTerceto(indiceComparador,1,operadorNegado);
+				crearTerceto(obtenerNuevoNombreEtiqueta("bloque"),"_","_"); 
 			}
 			| comparacion { indiceComparador1 = indiceComparador; } OP_AND comparacion	
 			{	printf("\t\tCONDICION DOBLE AND\n");
@@ -441,12 +457,14 @@ condicion:
 				strcpy(condicion, "AND");
 				poner_en_pila(&pila_condicion_doble,&indiceComparador1);
 				poner_en_pila(&pila_condicion_doble,&indiceComparador2);
+				crearTerceto(obtenerNuevoNombreEtiqueta("bloque"),"_","_"); 
 			}
 			| comparacion 
 			{ 	indiceComparador1 = indiceComparador; 
 				char *operador = obtenerTerceto(indiceComparador1,1);
 				char *operadorNegado = negarComparador(operador);
 				modificarTerceto(indiceComparador1,1,operadorNegado);
+				crearTerceto(obtenerNuevoNombreEtiqueta("bloque"),"_","_"); 
 			} 
 			OP_OR  comparacion	
 			{	printf("\t\tCONDICION DOBLE OR\n");		
@@ -454,6 +472,7 @@ condicion:
 				strcpy(condicion, "OR");
 				poner_en_pila(&pila_condicion_doble,&indiceComparador1);
 				poner_en_pila(&pila_condicion_doble,&indiceComparador2);
+				crearTerceto(obtenerNuevoNombreEtiqueta("bloque"),"_","_"); 
 			}	;
 
 comparacion:
@@ -631,12 +650,19 @@ char * negarComparador(char* comparador)
 	return NULL;
 }
 
-char * obtenerNuevoNombreEtiqueta()
+char * obtenerNuevoNombreEtiqueta(char * val)
 {
-	static char nombreEtiqueta[30];
-	sprintf(nombreEtiqueta, "ETIQUETA%d", incremento_etiqueta);
-	incremento_etiqueta++;
+	// static char nombreEtiqueta[30];
+	// int indiceActualTerceto = obtenerIndiceActual();
+	// sprintf(nombreEtiqueta, "ETIQUETA%d", indiceActualTerceto);
+	// incremento_etiqueta++;
+	// return nombreEtiqueta;
+
+	static char nombreEtiqueta[50];
+	int indiceActualTerceto = obtenerIndiceActual();
+	sprintf(nombreEtiqueta, "ETIQ_%s_%d", val, indiceActualTerceto);
 	return nombreEtiqueta;
+
 }
 
 void insertarEnArrayComparacionTipos(char * val)
@@ -880,12 +906,9 @@ void generarCodigo(){
             fprintf(pfASM, "\tsahf\n\n");
 		}
 		
-		if(strstr(operador, "ETIQUETA") != NULL)
+		if(strstr(operador, "ETIQ") != NULL)
 		{
 			flag = 1;
-			// sprintf(aux,"ETIQUETA%d:",nTerc);                            
-            // fprintf(pfASM,"\n\nETIQUETA%d:\n",i);
-
 			fprintf(pfASM,"\n\n%s:\n",operador);
 		}
 
@@ -893,49 +916,56 @@ void generarCodigo(){
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tjmp ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tjmp %s\n",etiqueta);
 		}
 
 		if(strcmp(operador, "JE") == 0)
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tje ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tje %s\n",etiqueta);
 		}
 
 		if(strcmp(operador, "JNE") == 0)
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tjne ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tjne %s\n", etiqueta);
 		}
 
 		if(strcmp(operador, "JB") == 0)
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tjb ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tjb %s\n", etiqueta);
 		}
 
 		if(strcmp(operador, "JBE") == 0)
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tjbe ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tjbe %s\n", etiqueta);
 		}
 
 		if(strcmp(operador, "JA") == 0)
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tja ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tja %s\n", etiqueta);
 		}
 
 		if(strcmp(operador, "JAE") == 0)
 		{
 			flag = 1;
 			int indiceIzquierdo = desarmarIndice(tercetos[i].operandoIzq);
-            fprintf(pfASM, "\tjae ETIQUETA%d\n",indiceIzquierdo);
+			char* etiqueta = obtenerTerceto(indiceIzquierdo, 1);
+            fprintf(pfASM, "\tjae %s\n", etiqueta);
 		}
 
 		if(strcmp(operador, "-") == 0)
